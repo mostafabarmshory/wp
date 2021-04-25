@@ -57,7 +57,9 @@ class PostCollection implements PostCollectionInterface
      * @see \Pluf\WP\CollectionInterface::find()
      */
     public function find(SearchParams $params): Iterator
-    {}
+    {
+        return new PostIterator($this, $params);
+    }
 
     /**
      *
@@ -88,5 +90,32 @@ class PostCollection implements PostCollectionInterface
         fclose($myfile);
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\PostCollectionInterface::getById()
+     */
+    public function getById($id): PostInterface
+    {
+        $post = new Post($this, $id);
+        $path = $this->getPath() . '/' . $post->getId();
+        // Get the contents of the JSON file
+        $strJsonFileContents = file_get_contents($path);
+        // Convert to array
+        $data = json_decode($strJsonFileContents, true);
+        $post->setData($data);
+        return $post;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\PostCollectionInterface::update()
+     */
+    public function update(PostInterface $post): PostInterface
+    {
+        $this->save($post);
+        return $post;
+    }
 }
 

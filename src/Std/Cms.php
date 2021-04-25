@@ -2,6 +2,7 @@
 namespace Pluf\WP\Std;
 
 use Pluf\WP\CmsAbstract;
+use Pluf\WP\MediaCollectionInterface;
 use Pluf\WP\PostCollectionInterface;
 
 class Cms extends CmsAbstract
@@ -31,7 +32,20 @@ class Cms extends CmsAbstract
     public function init()
     {}
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\CmsAbstract::postCollection()
+     */
     public function postCollection(): PostCollectionInterface
+    {}
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\CmsAbstract::mediaCollection()
+     */
+    public function mediaCollection(): MediaCollectionInterface
     {}
 }
 

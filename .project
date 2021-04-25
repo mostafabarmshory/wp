@@ -34,7 +34,7 @@
 		<link>
 			<name>bin/clone.php</name>
 			<type>1</type>
-			<location>/home/maso/eclipse-workspace/pluf/wp/bin/wp-clone</location>
+			<location>/home/maso/git/wp/bin/wp-clone</location>
 		</link>
 	</linkedResources>
 </projectDescription>

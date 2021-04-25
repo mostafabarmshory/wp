@@ -38,11 +38,10 @@ class PostCollection implements PostCollectionInterface
     {
         return new PostIterator($this, $params);
     }
-    
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Pluf\WP\PostCollectionInterface::put()
      */
     public function put(PostInterface $post): PostInterface
@@ -50,5 +49,10 @@ class PostCollection implements PostCollectionInterface
         return null;
     }
 
+    public function getById($id): PostInterface
+    {}
+
+    public function update(PostInterface $post): PostInterface
+    {}
 }
 

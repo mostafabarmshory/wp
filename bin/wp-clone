@@ -37,8 +37,12 @@ $unitTracker = new UnitTracker([
     GetoptCloneParams::class,
     CmsLoadSource::class,
     CmsLoadDist::class,
-    //CmsClonePosts::class,
-    CmsCloneMedia::class,
+    
+    // 1. Clone posts
+    CmsClonePosts::class,
+    
+    // 2. Clone medias
+    //CmsCloneMedia::class,
     //CmsCloneMediaContent::class,
 ], $container);
 $unitTracker->doProcess();

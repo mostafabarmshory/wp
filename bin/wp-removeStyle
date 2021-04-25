@@ -17,8 +17,7 @@ use Pluf\WP\Process\GetoptUpdateParams;
 use Pluf\WP\Process\Wellcome;
 use Pluf\WP\Process\CmsLoadDist;
 use Pluf\WP\Process\CmsLoadSource;
-use Pluf\WP\Process\CmsUpdatePostsContentByOrigin;
-use Pluf\WP\Process\CmsUpdatePostsCanonicalLink;
+use Pluf\WP\Process\CmsPostsContentRemoveStyle;
 
 // *****************************************************************
 // Loading services
@@ -36,13 +35,8 @@ $unitTracker = new UnitTracker([
     // TODO replace with update params
     GetoptUpdateParams::class,
     CmsLoadSource::class,
-    
-    // 1. Update content
-    CmsUpdatePostsContentByOrigin::class,
-    
-    // Update metas
-    CmsUpdatePostsCanonicalLink::class,
-    
+
+    CmsPostsContentRemoveStyle::class,
 ], $container);
 $unitTracker->doProcess();
 
