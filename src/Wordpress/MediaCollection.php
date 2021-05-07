@@ -46,5 +46,21 @@ class MediaCollection implements MediaCollectionInterface
      */
     public function put(MediaInterface $media): MediaInterface
     {}
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\MediaCollectionInterface::getByName()
+     */
+    public function getByName(string $name): ?MediaInterface
+    {}
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\MediaCollectionInterface::getById()
+     */
+    public function getById($id): ?MediaInterface
+    {}
 }
 

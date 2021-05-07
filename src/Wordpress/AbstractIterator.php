@@ -115,7 +115,7 @@ abstract class AbstractIterator implements Iterator
      */
     private function endOfPage(): bool
     {
-        return $this->index >= $this->perPage;
+        return (! empty($this->data) && $this->index >= sizeof($this->data) - 1) || $this->index >= $this->perPage;
     }
 
     /**

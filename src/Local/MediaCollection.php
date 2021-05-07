@@ -82,5 +82,36 @@ class MediaCollection implements MediaCollectionInterface
         fwrite($myfile, json_encode($data));
         fclose($myfile);
     }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\MediaCollectionInterface::getByName()
+     */
+    public function getByName(string $name): ?MediaInterface
+    {}
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\MediaCollectionInterface::getById()
+     */
+    public function getById($id): ?MediaInterface
+    {
+        $media = new Media($this, $id);
+        $path = $this->getPath() . '/' . $media->getId();
+        // Get the contents of the JSON file
+        if (! is_file($path)) {
+            return null;
+        }
+        $strJsonFileContents = file_get_contents($path);
+        // Convert to array
+        $data = json_decode($strJsonFileContents, true);
+        if (! isset($data)) {
+            throw new \RuntimeException("File content is not correct for media id:" . $id);
+        }
+        $media->setData($data);
+        return $media;
+    }
 }
 
