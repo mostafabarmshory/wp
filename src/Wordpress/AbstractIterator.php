@@ -139,7 +139,7 @@ abstract class AbstractIterator implements Iterator
                     'headers' => [
                         'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
                         'accept-encoding' => 'gzip, deflate, br',
-                        'user-agent' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36'
+                        'user-agent' => 'Pluf/Bot/7.0 Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36'
                     ]
                 ]);
 

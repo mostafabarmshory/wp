@@ -16,10 +16,17 @@ class CmsClonePosts
         $params = new SearchParams();
         $params->perPage = 20;
         $it = $sourceCms->postCollection()->find($params);
+        $postCollection  = $distCms->postCollection();
         $index = 0;
         while ($it->valid()) {
             $post = $it->next();
-            $tpost = $distCms->postCollection()->put($post);
+            $tpost = $postCollection->getById($post->getId());
+            if(isset($tpost)){
+                // Post exist we break the loop
+                break;
+            } else {
+                $tpost = $postCollection->put($post);
+            }
             $index ++;
 
             // if vebose

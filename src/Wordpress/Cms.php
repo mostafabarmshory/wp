@@ -13,14 +13,10 @@ class Cms extends CmsAbstract
     public $auth;
 
     public MediaCollection $mediaCollection;
-
     // public PageCollection $pageCollection;
     public PostCollection $postCollection;
-
     // public TagCollection $tagCollection;
-
     // public CategoryCollection $categoryCollection;
-
     // public CommentCollection $commentCollection;
 
     /**

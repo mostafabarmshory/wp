@@ -28,11 +28,11 @@ class GetoptCloneParams
             "source:", // Required value
             "source-type:", // Required value
             "source-login:", // No value
-            "source-password:",
+            "source-pass:",
             "dist:", // Optional value
             "dist-type:", // Optional value
-            "login:", // No value
-            "password:",
+            "dist-login:", // No value
+            "dist-pass:",
             // Options
             "verbose",
             'base-dir:'

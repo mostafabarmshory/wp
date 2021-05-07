@@ -1,6 +1,8 @@
 <?php
 namespace Pluf\WP;
 
+use DateTime;
+
 interface PostInterface extends ItemInterface
 {
 
@@ -34,9 +36,14 @@ interface PostInterface extends ItemInterface
     public function getMediaType(): ?string;
     
     public function setFileName(string $fileName): self;
-    public function getFIleName(): ?string;
+    public function getFileName(): ?string;
     
     public function setTitle(string $title): self;
     public function getTitle(): ?string;
+    
+    public function setDescription(string $description): self;
+    public function getDescription(): ?string;
+    
+    public function getModifDate(): string;
 }
 

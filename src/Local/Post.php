@@ -100,12 +100,11 @@ class Post implements PostInterface
      */
     public function getName(): string
     {
-        $name = $this->data['name'];
-        if (empty($name)) {
+        if (! array_key_exists('name', $this->data)) {
             $name = md5($this->postCollection->parent->baseDir) . '-' . $this->id;
             $this->setName($name);
         }
-        return $name;
+        return $this->data['name'];
     }
 
     /**
@@ -217,6 +216,46 @@ class Post implements PostInterface
     public function getTitle(): ?string
     {
         return $this->data['title'];
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\PostInterface::getModifDate()
+     */
+    public function getModifDate(): string
+    {
+        return $this->data['modif_dtime'];
+    }
+
+    public function setModifDate(string $date = null): self
+    {
+        if (empty($date)) {
+            $date = gmdate("Y-m-d H:i:s");
+        }
+        $this->data['modif_dtime'] = $date;
+        return $this;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\PostInterface::setDescription()
+     */
+    public function setDescription(string $description): self
+    {
+        $this->data['description'] = $description;
+        return $this;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\PostInterface::getDescription()
+     */
+    public function getDescription(): ?string
+    {
+        return $this->data['description'];
     }
 }
 

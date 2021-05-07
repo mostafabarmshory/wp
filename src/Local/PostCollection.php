@@ -85,6 +85,7 @@ class PostCollection implements PostCollectionInterface
     {
         $path = $this->getPath() . '/' . $post->getId();
         $myfile = fopen($path, "w");
+        $post->setModifDate();
         $data = $post->getData();
         fwrite($myfile, json_encode($data));
         fclose($myfile);
@@ -95,14 +96,20 @@ class PostCollection implements PostCollectionInterface
      * {@inheritdoc}
      * @see \Pluf\WP\PostCollectionInterface::getById()
      */
-    public function getById($id): PostInterface
+    public function getById($id): ?PostInterface
     {
         $post = new Post($this, $id);
         $path = $this->getPath() . '/' . $post->getId();
         // Get the contents of the JSON file
+        if (! is_file($path)) {
+            return null;
+        }
         $strJsonFileContents = file_get_contents($path);
         // Convert to array
         $data = json_decode($strJsonFileContents, true);
+        if(!isset($data)){
+            throw new \RuntimeException("File content is not correct for post id:" . $id);
+        }
         $post->setData($data);
         return $post;
     }
@@ -117,5 +124,11 @@ class PostCollection implements PostCollectionInterface
         $this->save($post);
         return $post;
     }
+    
+    public function getByName(string $name): ?PostInterface
+    {
+        throw new \RuntimeException("Impossible to get content with name from local");
+    }
+
 }
 

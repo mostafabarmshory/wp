@@ -54,5 +54,8 @@ class PostCollection implements PostCollectionInterface
 
     public function update(PostInterface $post): PostInterface
     {}
+
+    public function getByName(string $name): ?PostInterface
+    {}
 }
 
