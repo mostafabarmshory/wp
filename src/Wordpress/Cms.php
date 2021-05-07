@@ -4,6 +4,7 @@ namespace Pluf\WP\Wordpress;
 use Pluf\WP\CmsAbstract;
 use Pluf\WP\MediaCollectionInterface;
 use Pluf\WP\PostCollectionInterface;
+use Pluf\WP\TagsCollectionInterface;
 
 class Cms extends CmsAbstract
 {
@@ -13,9 +14,12 @@ class Cms extends CmsAbstract
     public $auth;
 
     public MediaCollection $mediaCollection;
+
     // public PageCollection $pageCollection;
     public PostCollection $postCollection;
-    // public TagCollection $tagCollection;
+
+    public TagCollection $tagCollection;
+
     // public CategoryCollection $categoryCollection;
     // public CommentCollection $commentCollection;
 
@@ -51,8 +55,8 @@ class Cms extends CmsAbstract
         $this->postCollection->init();
 
         // TagsCollection.php
-        // $this->tagCollection = new TagCollection($this);
-        // $this->tagCollection->init();
+        $this->tagCollection = new TagCollection($this);
+        $this->tagCollection->init();
 
         // init CategoryCollection
         // $this->categoryCollection = new CategoryCollection($this);
@@ -81,6 +85,16 @@ class Cms extends CmsAbstract
     public function mediaCollection(): MediaCollectionInterface
     {
         return $this->mediaCollection;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\CmsAbstract::tagCollection()
+     */
+    public function tagCollection(): TagsCollectionInterface
+    {
+        return $this->tagCollection;
     }
 }
 

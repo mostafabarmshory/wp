@@ -41,7 +41,7 @@ class PostCollection implements PostCollectionInterface
 
         // create repo
         $pathname = $this->getPath();
-        $this->assertTrue(is_dir($pathname) || mkdir($pathname), 'Impossilbe to create post directory {{pathname}} for local cms.', [
+        $this->assertTrue(is_dir($pathname) || mkdir($pathname), 'Impossilbe to create tags directory {{pathname}} for local cms.', [
             'pathname' => $pathname
         ]);
     }

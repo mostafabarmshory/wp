@@ -20,6 +20,7 @@ use Pluf\WP\Process\GetoptCloneParams;
 use Pluf\WP\Process\Wellcome;
 use Pluf\WP\Process\CmsClonePosts;
 use Pluf\WP\Process\CmsMediaClone;
+use Pluf\WP\Process\CmsTagClone;
 
 // *****************************************************************
 // Loading services
@@ -38,12 +39,10 @@ $unitTracker = new UnitTracker([
     CmsLoadSource::class,
     CmsLoadDist::class,
     
-    // 1. Clone posts
-    CmsClonePosts::class,
-    
-    // 2. Clone medias
-    CmsMediaClone::class,
+    //CmsClonePosts::class,
+   // CmsMediaClone::class,
     //CmsCloneMediaContent::class,
+    CmsTagClone::class,
 ], $container);
 $unitTracker->doProcess();
 

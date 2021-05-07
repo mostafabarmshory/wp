@@ -42,6 +42,17 @@ class Post implements PostInterface
     /**
      *
      * {@inheritdoc}
+     * @see \Pluf\WP\ItemInterface::setData()
+     */
+    public function setData($data): self
+    {
+        $this->data = $data;
+        return $this;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
      * @see \Pluf\WP\PostInterface::getOrigin()
      */
     public function getOrigin(): array
@@ -187,11 +198,11 @@ class Post implements PostInterface
 
         return strtotime($date);
     }
+
     public function setDescription(string $description): self
     {}
 
     public function getDescription(): ?string
     {}
-
 }
 
