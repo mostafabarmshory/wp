@@ -16,7 +16,7 @@ use Pluf\WP\Cli;
 use Pluf\WP\Process\CmsCloneSourceToDist;
 use Pluf\WP\Process\CmsLoadDist;
 use Pluf\WP\Process\CmsLoadSource;
-use Pluf\WP\Process\GetoptCloneParams;
+use Pluf\WP\Process\GetoptUpdateParams;
 use Pluf\WP\Process\Wellcome;
 use Pluf\WP\Process\CmsPostSetProperty;
 
@@ -33,7 +33,7 @@ $container->addService('output', function () {
 // *****************************************************************
 $unitTracker = new UnitTracker([
     Wellcome::class,
-    GetoptCloneParams::class,
+    GetoptUpdateParams::class,
     CmsLoadSource::class,
     
     CmsPostSetProperty::class,

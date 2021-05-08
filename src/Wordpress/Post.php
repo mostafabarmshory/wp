@@ -204,5 +204,8 @@ class Post implements PostInterface
 
     public function getDescription(): ?string
     {}
+
+    public function setProperty($key, $value): self
+    {}
 }
 

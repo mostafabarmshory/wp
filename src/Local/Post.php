@@ -40,8 +40,8 @@ class Post implements PostInterface
     }
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Pluf\WP\ItemInterface::setData()
      */
     public function setData($data): self
@@ -262,6 +262,17 @@ class Post implements PostInterface
     public function getDescription(): ?string
     {
         return $this->data['description'];
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\PostInterface::setProperty()
+     */
+    public function setProperty($key, $value): self
+    {
+        $this->data[$key] = $value;
+        return $this;
     }
 }
 

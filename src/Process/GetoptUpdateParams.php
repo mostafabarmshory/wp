@@ -37,6 +37,10 @@ class GetoptUpdateParams
             "verbose",
             'base-dir:',
 
+            // setting propery
+            'key:',
+            'value:',
+
             "canonical-link-prefix:"
         );
         $result = getopt($shortopts, $longopts);
@@ -67,7 +71,14 @@ class GetoptUpdateParams
             'distType' => $this->getOption($result, [
                 'dist-type'
             ], 'std'),
-            'distAuth' => $this->getAuth($result, 'dist-')
+            'distAuth' => $this->getAuth($result, 'dist-'),
+
+            'propertyKey' => $this->getOption($result, [
+                'key'
+            ], null),
+            'propertyValue' => $this->getOption($result, [
+                'value'
+            ], null)
         ];
         $this->printOptions($output, $options);
         return $unitTracker->next($options);

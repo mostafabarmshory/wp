@@ -173,5 +173,11 @@ class Post implements PostInterface
     {
         return $this->data['description'];
     }
+
+    public function setData($data): self
+    {}
+
+    public function setProperty($key, $value): self
+    {}
 }
 

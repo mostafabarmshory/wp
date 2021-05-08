@@ -28,5 +28,7 @@ interface PostInterface extends ItemInterface
     public function getDescription(): ?string;
     
     public function getModifDate(): string;
+    
+    public function setProperty($key, $value): self;
 }
 

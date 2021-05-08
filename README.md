@@ -103,4 +103,10 @@ wp-upload \
 	--dist-login admin \
 	--dist-pass admin
 	
+wp-setProperty \
+	--verbose \
+	--source local://test.com \
+	--key state \
+	--value init
+	
 	
