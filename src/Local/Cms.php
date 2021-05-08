@@ -2,6 +2,7 @@
 namespace Pluf\WP\Local;
 
 use Pluf\WP\AssertTrait;
+use Pluf\WP\CategoryCollectionInterface;
 use Pluf\WP\CmsAbstract;
 use Pluf\WP\MediaCollectionInterface;
 use Pluf\WP\PostCollectionInterface;
@@ -111,6 +112,16 @@ class Cms extends CmsAbstract
     public function tagCollection(): TagsCollectionInterface
     {
         return $this->tagCollection;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\CmsAbstract::categoryCollection()
+     */
+    public function categoryCollection(): CategoryCollectionInterface
+    {
+        return $this->categoryCollection;
     }
 }
 

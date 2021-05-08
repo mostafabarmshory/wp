@@ -36,7 +36,8 @@
 		"bin/wp-update",
 		"bin/wp-removeStyle",
 		"bin/wp-minify",
-		"bin/wp-upload"
+		"bin/wp-upload",
+		"bin/wp-setProperty"
 	],
 	"require" : {
 		"pluf/log" : "~7.0",

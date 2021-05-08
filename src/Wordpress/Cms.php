@@ -1,6 +1,7 @@
 <?php
 namespace Pluf\WP\Wordpress;
 
+use Pluf\WP\CategoryCollectionInterface;
 use Pluf\WP\CmsAbstract;
 use Pluf\WP\MediaCollectionInterface;
 use Pluf\WP\PostCollectionInterface;
@@ -20,7 +21,8 @@ class Cms extends CmsAbstract
 
     public TagCollection $tagCollection;
 
-    // public CategoryCollection $categoryCollection;
+    public CategoryCollection $categoryCollection;
+
     // public CommentCollection $commentCollection;
 
     /**
@@ -59,8 +61,8 @@ class Cms extends CmsAbstract
         $this->tagCollection->init();
 
         // init CategoryCollection
-        // $this->categoryCollection = new CategoryCollection($this);
-        // $this->categoryCollection->init();
+        $this->categoryCollection = new CategoryCollection($this);
+        $this->categoryCollection->init();
 
         // init CommentCollection
         // $this->commentCollection = new CommentCollection($this);
@@ -96,5 +98,16 @@ class Cms extends CmsAbstract
     {
         return $this->tagCollection;
     }
+    
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Pluf\WP\CmsAbstract::categoryCollection()
+     */
+    public function categoryCollection(): CategoryCollectionInterface
+    {
+        return $this->categoryCollection;
+    }
+
 }
 

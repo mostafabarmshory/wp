@@ -39,9 +39,15 @@ class Post implements PostInterface
         return $this->data;
     }
 
-    public function setData(array $data)
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Pluf\WP\ItemInterface::setData()
+     */
+    public function setData($data): self
     {
         $this->data = $data;
+        return $this;
     }
 
     public function setOrigin(PostInterface $data): self

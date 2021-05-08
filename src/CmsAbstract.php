@@ -11,5 +11,7 @@ abstract class CmsAbstract
     public abstract function mediaCollection(): MediaCollectionInterface;
 
     public abstract function tagCollection(): TagsCollectionInterface;
+
+    public abstract function categoryCollection(): CategoryCollectionInterface;
 }
 
