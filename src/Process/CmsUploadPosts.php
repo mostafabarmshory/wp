@@ -24,6 +24,7 @@ class CmsUploadPosts
             // if vebose
             $output->println("[$index]" . $post->getName());
 
+            // 1- create content
             $tpost = $postCollection->getByName($post->getName());
             if (! isset($tpost)) {
                 $output->println("Content not found. New content created:" . $post->getName());
@@ -31,6 +32,11 @@ class CmsUploadPosts
             } else {
                 $output->println("Simular content found :" . $post->getName());
             }
+            
+            if (isset($tpost) && $post->getModifDate() > $tpost->getModifDate()) {
+                
+            }
+            // 2- update info
             if (! isset($tpost) || $post->getModifDate() > $tpost->getModifDate()) {
                 $output->println("Try to update the content :" . $post->getName());
                 $tpost->setContent($post->getContent($post))
@@ -40,6 +46,12 @@ class CmsUploadPosts
                     ->setFileName($post->getFileName());
                 $postCollection->update($tpost);
             }
+            
+            // 3- update content
+            // TODO: 4- update meatdata
+            // TODO: 5- update tags
+            // TODO: 6- update categories
+            // TODO: 7- 
         }
         $output->println("Finish the clone posts");
         return $unitTracker->next();

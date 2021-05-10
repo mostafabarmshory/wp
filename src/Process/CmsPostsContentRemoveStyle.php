@@ -33,8 +33,9 @@ class CmsPostsContentRemoveStyle
 
             $index ++;
             // if vebose
-            $output->println("[$index]" . $post->getId() . " ");
+            $output->print(".");
         }
+        $output->println(".");
         return $unitTracker->next();
     }
 

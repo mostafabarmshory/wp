@@ -2,9 +2,11 @@
 namespace Pluf\WP\Std;
 
 use GuzzleHttp\Client;
+use Pluf\WP\CategoryCollectionInterface;
 use Pluf\WP\CmsAbstract;
 use Pluf\WP\MediaCollectionInterface;
 use Pluf\WP\PostCollectionInterface;
+use Pluf\WP\TagsCollectionInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class Cms extends CmsAbstract
@@ -119,5 +121,21 @@ class Cms extends CmsAbstract
     {
         return $this->client->request($method, $uri, $options);
     }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\CmsAbstract::tagCollection()
+     */
+    public function tagCollection(): TagsCollectionInterface
+    {}
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\CmsAbstract::categoryCollection()
+     */
+    public function categoryCollection(): CategoryCollectionInterface
+    {}
 }
 
