@@ -18,7 +18,7 @@ class CmsUpdatePostsContentByOrigin
 
     public function __invoke(UnitTrackerInterface $unitTracker, CmsAbstract $sourceCms, Output $output)
     {
-        $output->println("Getting start to update posts");
+        $output->print("Update content value by origin");
 
         $params = new SearchParams();
         $params->perPage = 20;
@@ -36,9 +36,9 @@ class CmsUpdatePostsContentByOrigin
 
             $index ++;
             // if vebose
-            $output->println("[$index]" . $post->getId() . " Is updated");
+            $output->print(".");
         }
-        $output->println("Finish the update posts");
+        $output->println("[ok]");
         return $unitTracker->next();
     }
 

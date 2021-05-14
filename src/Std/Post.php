@@ -260,6 +260,7 @@ class Post implements PostInterface
     {
         $this->metas[$key] = $value;
         $this->metasDerty = true;
+        return $this;
     }
 
     /**
@@ -295,6 +296,7 @@ class Post implements PostInterface
             $this->contentDerty = true;
         }
         $this->content = $content;
+        return $this;
     }
 }
 

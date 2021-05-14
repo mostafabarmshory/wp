@@ -41,11 +41,15 @@ class GetoptUpdateParams
             'key:',
             'value:',
 
-            "canonical-link-prefix:"
+            "canonical-link-prefix:",
+            "update-description"
         );
         $result = getopt($shortopts, $longopts);
 
         $options = [
+            'updateDescription' => $this->getOptionBool($result, [
+                'update-description',
+            ], false),
             'canonicalLinkPrefix' => $this->getOption($result, [
                 'canonical-link-prefix'
             ], ''),

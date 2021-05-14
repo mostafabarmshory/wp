@@ -19,6 +19,7 @@ use Pluf\WP\Process\CmsLoadDist;
 use Pluf\WP\Process\CmsLoadSource;
 use Pluf\WP\Process\CmsUpdatePostsContentByOrigin;
 use Pluf\WP\Process\CmsUpdatePostsCanonicalLink;
+use Pluf\WP\Process\CmsPostsSetDescription;
 
 // *****************************************************************
 // Loading services
@@ -42,6 +43,7 @@ $unitTracker = new UnitTracker([
     
     // Update metas
     CmsUpdatePostsCanonicalLink::class,
+    CmsPostsSetDescription:: class
     
 ], $container);
 $unitTracker->doProcess();

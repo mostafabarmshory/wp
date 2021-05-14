@@ -19,7 +19,7 @@ class CmsUpdatePostsCanonicalLink
     public function __invoke(UnitTrackerInterface $unitTracker, CmsAbstract $sourceCms, string $canonicalLinkPrefix = null, Output $output)
     {
         if (! empty($canonicalLinkPrefix)) {
-            $output->println("Setting canonical link");
+            $output->print("Setting canonical link");
             $params = new SearchParams();
             $params->perPage = 20;
             $it = $sourceCms->postCollection()->find($params);
@@ -31,9 +31,9 @@ class CmsUpdatePostsCanonicalLink
 
                 $index ++;
                 // if vebose
-                $output->println("[$index]" . $post->getId() . " Is updated with canonical link");
+                $output->print(".");
             }
-            $output->println("Finish the update canonical");
+            $output->println("[ok]");
         }
         return $unitTracker->next();
     }

@@ -11,7 +11,7 @@ class CmsPostsUpload
 
     public function __invoke(UnitTrackerInterface $unitTracker, CmsAbstract $sourceCms, CmsAbstract $distCms, Output $output)
     {
-        $output->println("Getting start to uplad posts");
+        $output->print("Getting start to uplad posts");
 
         $params = new SearchParams();
         $params->perPage = 20;
@@ -51,7 +51,7 @@ class CmsPostsUpload
             // TODO: 5- update tags
             // TODO: 6- update categories
         }
-        $output->println(".");
+        $output->println("[ok]");
         return $unitTracker->next();
     }
 }

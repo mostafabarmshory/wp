@@ -71,6 +71,7 @@ class PostCollection implements PostCollectionInterface
         if ($post->contentDerty) {
             $this->saveContent($post);
         }
+        return $post;
     }
 
     /**
@@ -195,6 +196,7 @@ class PostCollection implements PostCollectionInterface
     {
         $response = $this->parent->request('GET', 'cms/contents/' . $name . '/metas');
         $metasArray = json_decode($response->getBody(), true);
+        $metasArray = $metasArray['items'];
         if (! is_array($metasArray)) {
             $metasArray = [];
         }
