@@ -24,7 +24,7 @@ class Post implements PostInterface
      * {@inheritdoc}
      * @see \Pluf\WP\ItemInterface::getId()
      */
-    public function getId(): string
+    public function getId()
     {
         return $this->data['id'];
     }
@@ -205,7 +205,19 @@ class Post implements PostInterface
     public function getDescription(): ?string
     {}
 
-    public function setProperty($key, $value): self
+    public function setProperty(string $key, $value): self
     {}
+    
+    
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Pluf\WP\PostInterface::getMetas()
+     */
+    public function getMetas(): array
+    {
+        return [];
+    }
+
 }
 

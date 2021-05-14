@@ -18,7 +18,7 @@ use Pluf\WP\Process\CmsLoadDist;
 use Pluf\WP\Process\CmsLoadSource;
 use Pluf\WP\Process\GetoptCloneParams;
 use Pluf\WP\Process\Wellcome;
-use Pluf\WP\Process\CmsUploadPosts;
+use Pluf\WP\Process\CmsPostsUpload;
 
 // *****************************************************************
 // Loading services
@@ -38,7 +38,7 @@ $unitTracker = new UnitTracker([
     CmsLoadDist::class,
     
     // 1. Clone posts
-    CmsUploadPosts::class,
+    CmsPostsUpload::class,
     
     // 2. Clone medias
 ], $container);

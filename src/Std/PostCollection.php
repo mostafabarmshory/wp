@@ -8,6 +8,7 @@ use Pluf\WP\PostInterface;
 use Pluf\WP\SearchParams;
 use Iterator;
 use GuzzleHttp\Exception\GuzzleException;
+use Pluf\WP\Utils;
 
 class PostCollection implements PostCollectionInterface
 {
@@ -28,9 +29,21 @@ class PostCollection implements PostCollectionInterface
     public function init()
     {}
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\PostCollectionInterface::getById()
+     */
     public function getById($id): ?PostInterface
-    {}
+    {
+        return $this->getByName($id);
+    }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\CollectionInterface::find()
+     */
     public function find(SearchParams $params): Iterator
     {}
 
@@ -45,8 +58,19 @@ class PostCollection implements PostCollectionInterface
             'type' => Post::class,
             'alt' => get_class($post)
         ]);
-        
-        // TODO: 
+
+        // TODO:
+        if ($post->dataDerty) {
+            $this->saveData($post);
+        }
+
+        if ($post->metasDerty) {
+            $this->saveMetas($post);
+        }
+
+        if ($post->contentDerty) {
+            $this->saveContent($post);
+        }
     }
 
     /**
@@ -59,7 +83,7 @@ class PostCollection implements PostCollectionInterface
         // 1- create the contetn
         try {
             $response = $this->parent->request('POST', 'cms/contents', [
-                'form_params' => $this->postToForm($post)
+                'form_params' => Utils::postToForm($post)
             ]);
             $code = $response->getStatusCode();
         } catch (GuzzleException $ex) {
@@ -70,23 +94,9 @@ class PostCollection implements PostCollectionInterface
             'name' => $post->getName()
         ]);
         $data = json_decode($response->getBody(), true);
-        $npost = new Post($this, $data);
-
-        // 2- upload content
-        $response = $this->parent->request('POST', 'cms/contents/' . $npost->getId() . '/content', [
-            'headers' => [
-                'Content-Type' => 'text/html',
-                'Accept' => 'application/json'
-            ],
-            'body' => $post->getContent()
-        ]);
-        $this->assertTrue($code >= 200 && $code < 300, 'Fail to load content value of {{name}} from {{url}}', [
-            'url' => $this->parent->url,
-            'name' => $post->getName()
-        ]);
-        $data = json_decode($response->getBody(), true);
-        $npost = new Post($this, $data);
-
+        $npost = new Post($this, $data, $post->getContent(), $post->getMetas());
+        $this->saveContent($npost);
+        $this->saveMetas($npost);
         return $npost;
     }
 
@@ -97,6 +107,70 @@ class PostCollection implements PostCollectionInterface
      * @see \Pluf\WP\PostCollectionInterface::getByName()
      */
     public function getByName(string $name): ?PostInterface
+    {
+        $data = $this->fetchData($name);
+        if (empty($data)) {
+            return null;
+        }
+        $content = $this->fetchContent($name);
+        $metas = $this->fetchMetas($name);
+        $post = new Post($this, $data, $content, $metas);
+        return $post;
+    }
+
+    // ------------------------------------------------------ Save --------------------------------------
+    private function saveData(Post $post)
+    {
+        $response = $this->parent->request('POST', 'cms/contents/' . $post->getId(), [
+            'form_params' => Utils::postToForm($post)
+        ]);
+        $code = $response->getStatusCode();
+        $this->assertTrue($code >= 200 && $code < 300, 'Fail to get content {{name}} from {{url}}', [
+            'url' => $this->parent->url,
+            'name' => $post->getName()
+        ]);
+        $data = json_decode($response->getBody(), true);
+        $post->setData($data);
+        $post->dataDerty = false;
+    }
+
+    private function saveMetas(Post $post)
+    {
+        $metas = $post->getMetas();
+        foreach ($metas as $key => $value) {
+            $this->parent->request('POST', 'cms/contents/' . $post->getId() . '/metas', [
+                'form_params' => [
+                    'key' => $key,
+                    'value' => $value
+                ]
+            ]);
+        }
+        $post->metasDerty = false;
+    }
+
+    private function saveContent(Post $post)
+    {
+        // 2- upload content
+        $response = $this->parent->request('POST', 'cms/contents/' . $post->getId() . '/content', [
+            'headers' => [
+                'Content-Type' => 'text/html',
+                'Accept' => 'application/json'
+            ],
+            'body' => $post->getContent()
+        ]);
+        $data = json_decode($response->getBody(), true);
+        $post->setData($data);
+        $post->contentDerty = false;
+    }
+
+    // ------------------------------------------------------ fetch --------------------------------------
+    /**
+     * Fetch information form server
+     *
+     * @param string $name
+     * @return NULL|mixed
+     */
+    private function fetchData(string $name)
     {
         try {
             $response = $this->parent->request('GET', 'cms/contents/' . $name);
@@ -114,20 +188,32 @@ class PostCollection implements PostCollectionInterface
         ]);
 
         $data = json_decode($response->getBody(), true);
-        $post = new Post($this, $data);
-        return $post;
+        return $data;
     }
 
-    private function postToForm(PostInterface $post): array
+    private function fetchMetas(string $name): array
     {
-        return [
-            'name' => $post->getName(),
-            'title' => $post->getTitle(),
-            'description' => $post->getDescription(),
-            'file_name' => $post->getFIleName(),
-            'media_type' => $post->getMediaType(),
-            'mime_type' => $post->getMimeType()
-        ];
+        $response = $this->parent->request('GET', 'cms/contents/' . $name . '/metas');
+        $metasArray = json_decode($response->getBody(), true);
+        if (! is_array($metasArray)) {
+            $metasArray = [];
+        }
+        $metas = [];
+        foreach ($metasArray as $item) {
+            $metas[$item['key']] = $item['value'];
+        }
+        return $metas;
+    }
+
+    private function fetchContent(string $name): string
+    {
+        try {
+            $response = $this->parent->request('GET', 'cms/contents/' . $name . '/content');
+            $content = $response->getBody();
+        } catch (\Throwable $e) {
+            $content = "";
+        }
+        return $content;
     }
 }
 

@@ -96,17 +96,22 @@ wp-clean \
 	
 	
 wp-upload \
-	--verbose \
-	--source local://test.com \
-	--dist https://coincodile.com \
-	--dist-type std \
-	--dist-login admin \
-	--dist-pass admin
+ --verbose \
+ --source local://test.com \
+ --dist https://test.viraweb123.ir \
+ --dist-type std \
+ --dist-login admin \
+ --dist-pass admin
 	
 wp-setProperty \
 	--verbose \
 	--source local://test.com \
 	--key state \
 	--value init
+	
+wp-update \
+ --verbose \
+ --source local://test.com \
+ --canonical-link-prefix "/blog/posts"
 	
 	

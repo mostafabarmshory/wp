@@ -6,7 +6,7 @@ use Pluf\WP\CmsAbstract;
 use Pluf\WP\SearchParams;
 use Pluf\WP\Cli\Output;
 
-class CmsUploadPosts
+class CmsPostsUpload
 {
 
     public function __invoke(UnitTrackerInterface $unitTracker, CmsAbstract $sourceCms, CmsAbstract $distCms, Output $output)
@@ -22,38 +22,36 @@ class CmsUploadPosts
             $index ++;
             $post = $it->next();
             // if vebose
-            $output->println("[$index]" . $post->getName());
+            $output->print(".");
 
             // 1- create content
             $tpost = $postCollection->getByName($post->getName());
             if (! isset($tpost)) {
-                $output->println("Content not found. New content created:" . $post->getName());
                 $tpost = $postCollection->put($post);
-            } else {
-                $output->println("Simular content found :" . $post->getName());
             }
             
-            if (isset($tpost) && $post->getModifDate() > $tpost->getModifDate()) {
-                
-            }
             // 2- update info
             if (! isset($tpost) || $post->getModifDate() > $tpost->getModifDate()) {
-                $output->println("Try to update the content :" . $post->getName());
-                $tpost->setContent($post->getContent($post))
+                $tpost
+                    // fill data
                     ->setTitle($post->getTitle($post))
                     ->setMediaType($post->getMediaType())
                     ->setMimeType($post->getMimeType())
-                    ->setFileName($post->getFileName());
+                    ->setFileName($post->getFileName())
+                    // fill content
+                    ->setContent($post->getContent($post));
+                // fill meta
+                $metas = $post->getMetas();
+                foreach ($metas as $key => $value){
+                    $tpost->setMeta($key, $value);
+                }
                 $postCollection->update($tpost);
             }
             
-            // 3- update content
-            // TODO: 4- update meatdata
             // TODO: 5- update tags
             // TODO: 6- update categories
-            // TODO: 7- 
         }
-        $output->println("Finish the clone posts");
+        $output->println(".");
         return $unitTracker->next();
     }
 }

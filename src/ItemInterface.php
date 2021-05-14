@@ -16,7 +16,7 @@ interface ItemInterface
      */
     public function getOrigin(): array;
     
-    public function getId(): string;
+    public function getId();
 
     public function getData(): array;
     public function setData($data): self;

@@ -24,7 +24,7 @@ class Post implements PostInterface
      * {@inheritdoc}
      * @see \Pluf\WP\ItemInterface::getId()
      */
-    public function getId(): string
+    public function getId()
     {
         return $this->id;
     }
@@ -111,33 +111,6 @@ class Post implements PostInterface
             $this->setName($name);
         }
         return $this->data['name'];
-    }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Pluf\WP\PostInterface::getMeta()
-     */
-    public function getMeta(string $key): ?string
-    {
-        if (! array_key_exists('metas', $this->data)) {
-            $this->data['metas'] = [];
-        }
-        return $this->data['metas'][$key];
-    }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Pluf\WP\PostInterface::setMeta()
-     */
-    public function setMeta(string $key, ?string $value = null): self
-    {
-        if (! array_key_exists('metas', $this->data)) {
-            $this->data['metas'] = [];
-        }
-        $this->data['metas'][$key] = $value;
-        return $this;
     }
 
     /**
@@ -269,10 +242,52 @@ class Post implements PostInterface
      * {@inheritdoc}
      * @see \Pluf\WP\PostInterface::setProperty()
      */
-    public function setProperty($key, $value): self
+    public function setProperty(string $key, $value): self
     {
         $this->data[$key] = $value;
         return $this;
+    }
+
+    // ---------------------------------------------------- metas ---------------------------
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\PostInterface::getMeta()
+     */
+    public function getMeta(string $key): ?string
+    {
+        if (! array_key_exists('metas', $this->data)) {
+            $this->data['metas'] = [];
+        }
+        return $this->data['metas'][$key];
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\PostInterface::setMeta()
+     */
+    public function setMeta(string $key, ?string $value = null): self
+    {
+        if (! array_key_exists('metas', $this->data)) {
+            $this->data['metas'] = [];
+        }
+        $this->data['metas'][$key] = $value;
+        return $this;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\PostInterface::getMetas()
+     */
+    public function getMetas(): array
+    {
+        if (! array_key_exists('metas', $this->data)) {
+            $this->data['metas'] = [];
+        }
+        return $this->data['metas'];
     }
 }
 
