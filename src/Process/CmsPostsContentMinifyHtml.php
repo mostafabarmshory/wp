@@ -17,7 +17,7 @@ class CmsPostsContentMinifyHtml
 
     public function __invoke(UnitTrackerInterface $unitTracker, CmsAbstract $sourceCms, Output $output)
     {
-        $output->println("Remove style");
+        $output->print("Minifiying HTML");
 
         $params = new SearchParams();
         $params->perPage = 20;

@@ -11,7 +11,7 @@ class CmsMediaClone
 
     public function __invoke(UnitTrackerInterface $unitTracker, CmsAbstract $sourceCms, CmsAbstract $distCms, Output $output)
     {
-        $output->println("Getting start to clone media");
+        $output->print("Getting start to clone media");
 
         $params = new SearchParams();
         $params->perPage = 20;
@@ -23,16 +23,15 @@ class CmsMediaClone
 
             $tmedia = $mediaCollection->getById($media->getId());
             if ($tmedia) {
-                $output->println("Media exists");
                 break;
             }
             $tmedia = $mediaCollection->put($media);
             $index ++;
 
             // if vebose
-            $output->println("[$index]" . $media->getId() . " " . $tmedia->getId());
+            $output->print(".");
         }
-        $output->println("Finish the clone media");
+        $output->println("[ok]");
         return $unitTracker->next();
     }
 }

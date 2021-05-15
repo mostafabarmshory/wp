@@ -32,7 +32,7 @@ class CmsPostsSetDescription
                 $postCollection->update($post);
             }
         }
-        $output->println(". [ok]");
+        $output->println("[ok]");
         return $unitTracker->next();
     }
 

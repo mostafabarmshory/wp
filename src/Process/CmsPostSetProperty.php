@@ -17,7 +17,7 @@ class CmsPostSetProperty
 
     public function __invoke(UnitTrackerInterface $unitTracker, CmsAbstract $sourceCms, Output $output, $propertyKey, $propertyValue)
     {
-        $output->println("Setting property of a contetn");
+        $output->print("Setting property of a contetn");
 
         $params = new SearchParams();
         $params->perPage = 20;

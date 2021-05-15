@@ -11,7 +11,7 @@ class CmsClonePosts
 
     public function __invoke(UnitTrackerInterface $unitTracker, CmsAbstract $sourceCms, CmsAbstract $distCms, Output $output)
     {
-        $output->println("Getting start to clone posts");
+        $output->print("Getting start to clone posts");
 
         $params = new SearchParams();
         $params->perPage = 20;
@@ -30,9 +30,9 @@ class CmsClonePosts
             $index ++;
 
             // if vebose
-            $output->println("[$index]" . $post->getId() . " " . $tpost->getId());
+            $output->print(".");
         }
-        $output->println("Finish the clone posts");
+        $output->println("[ok]");
         return $unitTracker->next();
     }
 }

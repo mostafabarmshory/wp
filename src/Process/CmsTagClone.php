@@ -11,7 +11,7 @@ class CmsTagClone
 
     public function __invoke(UnitTrackerInterface $unitTracker, CmsAbstract $sourceCms, CmsAbstract $distCms, Output $output)
     {
-        $output->println("Getting start to clone tag");
+        $output->print("Getting start to clone tag");
 
         $params = new SearchParams();
         $params->perPage = 20;
@@ -23,14 +23,13 @@ class CmsTagClone
 
             $ttag = $tagCollection->getById($tag->getId());
             if ($ttag) {
-                $output->println("Media exists");
                 break;
             }
             $ttag = $tagCollection->put($tag);
             $index ++;
 
             // if vebose
-            $output->println("[$index]" . $tag->getId() . " " . $ttag->getId());
+            $output->print(".");
         }
         $output->println("Finish the clone tags");
         return $unitTracker->next();

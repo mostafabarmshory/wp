@@ -17,7 +17,7 @@ class CmsPostsContentRemoveStyle
 
     public function __invoke(UnitTrackerInterface $unitTracker, CmsAbstract $sourceCms, Output $output)
     {
-        $output->println("Remove style");
+        $output->print("Remove style");
 
         $params = new SearchParams();
         $params->perPage = 20;
