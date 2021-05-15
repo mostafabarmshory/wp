@@ -107,7 +107,7 @@ class PostCollection implements PostCollectionInterface
         $strJsonFileContents = file_get_contents($path);
         // Convert to array
         $data = json_decode($strJsonFileContents, true);
-        if(!isset($data)){
+        if (! isset($data)) {
             throw new \RuntimeException("File content is not correct for post id:" . $id);
         }
         $post->setData($data);
@@ -124,11 +124,23 @@ class PostCollection implements PostCollectionInterface
         $this->save($post);
         return $post;
     }
-    
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\PostCollectionInterface::getByName()
+     */
     public function getByName(string $name): ?PostInterface
     {
         throw new \RuntimeException("Impossible to get content with name from local");
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\PostCollectionInterface::performTransaction()
+     */
+    public function performTransaction(PostInterface $post, string $transactionName, array $params = []): PostInterface
+    {}
 }
 

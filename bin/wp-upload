@@ -21,6 +21,7 @@ use Pluf\WP\Process\CmsLoadSource;
 use Pluf\WP\Process\GetoptCloneParams;
 use Pluf\WP\Process\Wellcome;
 use Pluf\WP\Process\CmsPostsUpload;
+use Pluf\WP\Process\CmsPostsTouch;
 
 // *****************************************************************
 // Loading services
@@ -43,6 +44,7 @@ $unitTracker = new UnitTracker([
     CmsPostsUpload::class,
     
     // 2. Clone medias
+    CmsPostsTouch:: class
 ], $container);
 $unitTracker->doProcess();
 

@@ -28,6 +28,14 @@ docker run --rm -it -v ${PWD}:/root/wp 4a520d073035 \
 	wp-setProperty --source local://test.com --key test --value xxx
 ```
 
+/
+
+
+```bash
+docker run --rm -it -v ${PWD}:/root/wp mostafabarmshory/wp \
+ wp-clone --source https://blog.elbaan.com --source-type wp --dist local://blog.elbaan.com
+```
+
 ## Install from local folder
 
 TO install and access commandlines from local folder, create a composer.json file in ~/.config/composer 
