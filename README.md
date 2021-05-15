@@ -19,6 +19,15 @@ wp-clone \
 ### 
 
 
+## Run with docker
+
+Here is an example:
+
+```bash
+docker run --rm -it -v ${PWD}:/root/wp 4a520d073035 \
+	wp-setProperty --source local://test.com --key test --value xxx
+```
+
 ## Install from local folder
 
 TO install and access commandlines from local folder, create a composer.json file in ~/.config/composer 
