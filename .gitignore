@@ -1,0 +1,4 @@
+/vendor/
+/.settings/
+/.build/
+/.phpunit.result.cache

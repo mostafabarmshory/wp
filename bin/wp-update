@@ -1,0 +1,52 @@
+#!/usr/bin/env php
+<?php
+foreach ([
+    __DIR__ . '/../../../autoload.php',
+    __DIR__ . '/../vendor/autoload.php',
+    // On container
+    '/root/.composer/vendor/autoload.php'
+] as $file) {
+    if (file_exists($file)) {
+        require $file;
+        break;
+    }
+}
+
+use Pluf\Di;
+use Pluf\Scion\UnitTracker;
+use Pluf\WP\Cli;
+use Pluf\WP\Process\GetoptUpdateParams;
+use Pluf\WP\Process\Wellcome;
+use Pluf\WP\Process\CmsLoadDist;
+use Pluf\WP\Process\CmsLoadSource;
+use Pluf\WP\Process\CmsUpdatePostsContentByOrigin;
+use Pluf\WP\Process\CmsUpdatePostsCanonicalLink;
+use Pluf\WP\Process\CmsPostsSetDescription;
+
+// *****************************************************************
+// Loading services
+// *****************************************************************
+$container = new Di\Container();
+$container->addService('output', function () {
+    return new Cli\OutputStandard();
+});
+
+// *****************************************************************
+// Process the input request with UnitManager
+// *****************************************************************
+$unitTracker = new UnitTracker([
+    Wellcome::class,
+    // TODO replace with update params
+    GetoptUpdateParams::class,
+    CmsLoadSource::class,
+    
+    // 1. Update content
+    CmsUpdatePostsContentByOrigin::class,
+    
+    // Update metas
+    CmsUpdatePostsCanonicalLink::class,
+    CmsPostsSetDescription:: class
+    
+], $container);
+$unitTracker->doProcess();
+

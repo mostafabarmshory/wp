@@ -1,0 +1,16 @@
+{
+	"name" : "maso/composer",
+	"authors" : [{
+			"name" : "Mostafa Barmshory",
+			"email" : "mostafa.barmshory@gmail.com"
+		}
+	],
+	"require" : {
+		"mostafabarmshory/wp" : "@dev"
+	},
+	"repositories" : [{
+			"type" : "path",
+			"url" : "/var/www"
+		}
+	]
+}
