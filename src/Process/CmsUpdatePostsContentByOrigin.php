@@ -29,6 +29,7 @@ class CmsUpdatePostsContentByOrigin
             $post->setContent($this->fetchContent($post))
                 ->setTitle($this->fetchTitle($post))
                 ->setMeta('title', $this->fetchTitle($post))
+                ->setMeta('link.favicon', '/imgx/api/v2/cms/contents/favicon/content')
                 ->setMediaType('post')
                 ->setMimeType('text/html')
                 ->setFileName($post->getId() . '.html');
