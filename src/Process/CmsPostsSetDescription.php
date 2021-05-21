@@ -5,6 +5,7 @@ use Pluf\Scion\UnitTrackerInterface;
 use Pluf\WP\CmsAbstract;
 use Pluf\WP\SearchParams;
 use Pluf\WP\Cli\Output;
+use Pluf\WP\PostInterface;
 
 class CmsPostsSetDescription
 {
@@ -36,19 +37,59 @@ class CmsPostsSetDescription
         return $unitTracker->next();
     }
 
-    public function generateDescription(): string
+    public function generateDescription(PostInterface $post): string
     {
-        return 'TODO';
+        $des = strip_tags($post->getContent());
+        return $this->clean($des, 255);
     }
 
-    public function generateSeDescription(): string
+    public function generateSeDescription(PostInterface $post): string
     {
-        return 'TODO';
+        $des = strip_tags($post->getContent());
+        return $this->clean($des, 255);
     }
 
-    public function generateOgDescription(): string
+    public function generateOgDescription(PostInterface $post): string
     {
-        return 'TODO';
+        $des = strip_tags($post->getContent());
+        return $this->clean($des, 255);
+    }
+
+    private function clean($str, $len)
+    {
+        $str = $this->minifyHtml($str);
+        if (strlen($str) > $len) {
+            $str = substr($str, 0, $len);
+        }
+        return $str;
+    }
+
+    function minifyHtml($Html)
+    {
+        $Search = array(
+            '/(\n|^)(\x20+|\t)/',
+            '/(\n|^)\/\/(.*?)(\n|$)/',
+            '/\n/',
+            '/\<\!--.*?-->/',
+            '/(\x20+|\t)/', # Delete multispace (Without \n)
+            '/\>\s+\</', # strip whitespaces between tags
+            '/(\"|\')\s+\>/', # strip whitespaces between quotation ("') and end tags
+            '/=\s+(\"|\')/'
+        ); # strip whitespaces between = "'
+
+        $Replace = array(
+            "\n",
+            "\n",
+            " ",
+            "",
+            " ",
+            "><",
+            "$1>",
+            "=$1"
+        );
+
+        $Html = preg_replace($Search, $Replace, $Html);
+        return $Html;
     }
 }
 

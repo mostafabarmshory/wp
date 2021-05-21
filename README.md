@@ -130,6 +130,7 @@ wp-update \
  --verbose \
  --source local://test.com \
  --canonical-link-prefix "/blog/posts" \
+ --update-description \
  --update-language fa \
  --update-template "/api/v2/cms/contents/blog-post-template/content#main-body"
 	

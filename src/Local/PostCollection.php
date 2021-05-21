@@ -83,11 +83,18 @@ class PostCollection implements PostCollectionInterface
      */
     private function save(Post $post)
     {
-        $path = $this->getPath() . '/' . $post->getId();
-        $myfile = fopen($path, "w");
+        // generate data
         $post->setModifDate();
         $data = $post->getData();
-        fwrite($myfile, json_encode($data));
+        $toW = json_encode($data);
+        if (JSON_ERROR_NONE != json_last_error()) {
+            throw new \RuntimeException("fail to encode content :" . $post->getId());
+        }
+
+        // write data
+        $path = $this->getPath() . '/' . $post->getId();
+        $myfile = fopen($path, "w");
+        fwrite($myfile, $toW);
         fclose($myfile);
     }
 
@@ -107,8 +114,11 @@ class PostCollection implements PostCollectionInterface
         $strJsonFileContents = file_get_contents($path);
         // Convert to array
         $data = json_decode($strJsonFileContents, true);
+        if (JSON_ERROR_NONE != json_last_error()) {
+            throw new \RuntimeException("fail to encode content " . $post->getId() . " msg:" . json_last_error_msg());
+        }
         if (! isset($data)) {
-            throw new \RuntimeException("File content is not correct for post id:" . $id);
+            $data = [];
         }
         $post->setData($data);
         return $post;
