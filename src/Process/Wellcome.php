@@ -25,8 +25,8 @@ class Wellcome
 /_/   /_/\__,_/_/       |__/|__/_/      
                                         
                                        ')
-            ->println('Wordpress toolkit')
-            ->println('Version: ' . Color::blue('0.1'));
+            ->println('Crawler toolkit')
+            ->println('Version: ' . Color::red('0.1.1'));
 
         return $unitTracker->next();
     }

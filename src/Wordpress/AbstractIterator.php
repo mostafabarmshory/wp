@@ -43,7 +43,12 @@ abstract class AbstractIterator implements Iterator
             'base_uri' => $parent->parent->url,
             // You can set any number of default request options.
             // 'timeout' => 2.0
-            'cookies' => true
+            'cookies' => true,
+            'headers' => [
+                'accept-encoding' => 'gzip, deflate',
+                'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+                'user-agent' => 'Pluf/Bot/7.0 Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36'
+            ]
         ]);
         $this->rewind();
     }
@@ -135,11 +140,6 @@ abstract class AbstractIterator implements Iterator
                     'query' => [
                         'page' => $this->currentPage + 1,
                         'per_page' => $this->perPage
-                    ],
-                    'headers' => [
-                        'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-                        'accept-encoding' => 'gzip, deflate, br',
-                        'user-agent' => 'Pluf/Bot/7.0 Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36'
                     ]
                 ]);
 
