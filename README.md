@@ -24,16 +24,27 @@ wp-clone \
 Here is an example:
 
 ```bash
-docker run --rm -it -v ${PWD}:/root/wp 4a520d073035 \
-	wp-setProperty --source local://test.com --key test --value xxx
+docker run \
+  --rm -it \
+  -v ${PWD}:/root/wp \
+  4a520d073035 \
+  --network host \
+  wp-setProperty --source local://test.com --key test --value xxx
 ```
 
 /
 
+More example, to clone a website with the docker image just run the following command:
 
 ```bash
-docker run --rm -it -v ${PWD}:/root/wp mostafabarmshory/wp \
- wp-clone --source https://blog.elbaan.com --source-type wp --dist local://blog.elbaan.com
+docker run \
+  --rm -it \
+  -v ${PWD}:/root/wp \
+  --network host \
+  mostafabarmshory/wp \
+  wp-clone \
+  --source https://blog.elbaan.com --source-type wp \
+  --dist local://blog.elbaan.com
 ```
 
 ## Install from local folder

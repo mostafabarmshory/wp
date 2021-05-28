@@ -50,8 +50,8 @@ $unitTracker = new UnitTracker([
     // Update metas
     CmsPostsContentMinifyHtml::class,
     CmsPostsContentRemoveStyle::class,
-    CmsUpdatePostsCanonicalLink::class,
     CmsPostsSetDescription::class,
+    CmsUpdatePostsCanonicalLink::class,
     CmsPostsSetLanguage::class,
     CmsPostsSetTemplate::class
     

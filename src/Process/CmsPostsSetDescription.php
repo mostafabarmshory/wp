@@ -59,7 +59,7 @@ class CmsPostsSetDescription
     {
         $str = $this->minifyHtml($str);
         if (strlen($str) > $len) {
-            $str = substr($str, 0, $len);
+            $str = mb_substr($str, 0, $len);
         }
         return $str;
     }

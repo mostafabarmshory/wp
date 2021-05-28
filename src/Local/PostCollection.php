@@ -88,7 +88,7 @@ class PostCollection implements PostCollectionInterface
         $data = $post->getData();
         $toW = json_encode($data);
         if (JSON_ERROR_NONE != json_last_error()) {
-            throw new \RuntimeException("fail to encode content :" . $post->getId());
+            throw new \RuntimeException("fail to encode content :" . $post->getId() . ' msg:' . json_last_error_msg());
         }
 
         // write data
