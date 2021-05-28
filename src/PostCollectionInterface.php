@@ -10,5 +10,7 @@ interface PostCollectionInterface extends CollectionInterface
     public function getById($id): ?PostInterface;
 
     public function getByName(string $name): ?PostInterface;
+    
+    public function performTransaction(PostInterface $post, string $transactionName, array $params = []): PostInterface;
 }
 

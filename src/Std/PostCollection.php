@@ -119,6 +119,25 @@ class PostCollection implements PostCollectionInterface
         return $post;
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\PostCollectionInterface::performTransaction()
+     */
+    public function performTransaction(PostInterface $post, string $transactionName, array $params = []): PostInterface
+    {
+        $params['action'] = $transactionName;
+        $response = $this->parent->request('POST', 'cms/contents/' . $post->getName() . '/transitions', [
+            'form_params' => $params
+        ]);
+        $code = $response->getStatusCode();
+        $this->assertTrue($code >= 200 && $code < 300, 'Fail to peform transaction {{transactionName}} on content {{name}} ', [
+            'name' => $post->getName(),
+            'transactionName' => $transactionName
+        ]);
+        return $post;
+    }
+
     // ------------------------------------------------------ Save --------------------------------------
     private function saveData(Post $post)
     {

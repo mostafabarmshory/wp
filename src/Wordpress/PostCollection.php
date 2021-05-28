@@ -55,7 +55,20 @@ class PostCollection implements PostCollectionInterface
     public function update(PostInterface $post): PostInterface
     {}
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\PostCollectionInterface::getByName()
+     */
     public function getByName(string $name): ?PostInterface
+    {}
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\PostCollectionInterface::performTransaction()
+     */
+    public function performTransaction(PostInterface $post, string $transactionName, array $params = []): PostInterface
     {}
 }
 

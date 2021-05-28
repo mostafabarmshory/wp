@@ -42,11 +42,19 @@ class GetoptUpdateParams
             'value:',
 
             "canonical-link-prefix:",
-            "update-description"
+            "update-description",
+            "update-language:",
+            "update-template:",
         );
         $result = getopt($shortopts, $longopts);
 
         $options = [
+            'updateTemplate' => $this->getOption($result, [
+                'update-template',
+            ], null),
+            'updateLanguage' => $this->getOption($result, [
+                'update-language',
+            ], null),
             'updateDescription' => $this->getOptionBool($result, [
                 'update-description',
             ], false),
@@ -98,15 +106,17 @@ class GetoptUpdateParams
     {
         $output->println('-----------------------------------------------------')
             ->println('Options')
-            ->println('- Verbose         : ' . $options['verbose'])
-            ->println('- Base Dir        : ' . $options['baseDir'])
+            ->println('- Verbose            : ' . $options['verbose'])
+            ->println('- Base Dir           : ' . $options['baseDir'])
             ->println('Resources')
-            ->println('- Source          : ' . $options['source'])
-            ->println('- Source Type     : ' . $options['sourceType'])
-            ->println('- Source Auth     : ' . $this->authToStr($options['sourceAuth']))
-            ->println('- Dist            : ' . $options['dist'])
-            ->println('- Dist Type       : ' . $options['distType'])
-            ->println('- Dist Auth       : ' . $this->authToStr($options['distAuth']))
+            ->println('- Source             : ' . $options['source'])
+            ->println('- Source Type        : ' . $options['sourceType'])
+            ->println('- Source Auth        : ' . $this->authToStr($options['sourceAuth']))
+            ->println('- Dist               : ' . $options['dist'])
+            ->println('- Dist Type          : ' . $options['distType'])
+            ->println('- Dist Auth          : ' . $this->authToStr($options['distAuth']))
+            ->println('- Update Description : ' . $options['updateDescription'])
+            ->println('- Update Language    : ' . $options['updateLanguage'])
             ->println('------------------------------------------------------');
     }
 
