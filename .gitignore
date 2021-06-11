@@ -2,3 +2,4 @@
 /.settings/
 /.build/
 /.phpunit.result.cache
+/test-data/

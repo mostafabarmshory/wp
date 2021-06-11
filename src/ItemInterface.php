@@ -15,7 +15,7 @@ interface ItemInterface
      * @return array
      */
     public function getOrigin(): array;
-    public function setOrigin(PostInterface $data): self;
+    public function setOrigin($data): self;
     
     public function getId();
 

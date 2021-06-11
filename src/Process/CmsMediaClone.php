@@ -20,6 +20,9 @@ class CmsMediaClone
         $index = 0;
         while ($it->valid()) {
             $media = $it->next();
+            if(empty($media)){
+                continue;
+            }
 
             $tmedia = $mediaCollection->getById($media->getId());
             if ($tmedia) {

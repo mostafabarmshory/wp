@@ -218,7 +218,12 @@ class Post implements PostInterface
         return [];
     }
 
-    public function setOrigin(PostInterface $data): self
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Pluf\WP\ItemInterface::setOrigin()
+     */
+    public function setOrigin($data): self
     {}
 
     public function setDerty(bool $derty): self

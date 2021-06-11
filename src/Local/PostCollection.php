@@ -71,7 +71,8 @@ class PostCollection implements PostCollectionInterface
         // TODO: check if file exist
         // create new post
         $newPost = new Post($this, $post->getId());
-        $newPost->setOrigin($post);
+        $newPost->setData($post->getData());
+        $newPost->setDerty(true);
         $this->save($newPost);
         return $newPost;
     }
@@ -88,6 +89,7 @@ class PostCollection implements PostCollectionInterface
         $data = $post->getData();
         $toW = json_encode($data);
         if (JSON_ERROR_NONE != json_last_error()) {
+            var_dump($data);
             throw new \RuntimeException("fail to encode content :" . $post->getId() . ' msg:' . json_last_error_msg());
         }
 
@@ -96,7 +98,7 @@ class PostCollection implements PostCollectionInterface
         $myfile = fopen($path, "w");
         fwrite($myfile, $toW);
         fclose($myfile);
-        
+
         $post->setDerty(false);
     }
 
@@ -133,7 +135,7 @@ class PostCollection implements PostCollectionInterface
      */
     public function update(PostInterface $post): PostInterface
     {
-        if($post->isDerty()){
+        if ($post->isDerty()) {
             $this->save($post);
         }
         return $post;
@@ -166,6 +168,16 @@ class PostCollection implements PostCollectionInterface
     {
         $it = new PostIterator($this, $params);
         return $it->size();
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\PostCollectionInterface::newPost()
+     */
+    public function newPost($id): PostInterface
+    {
+        return new Post($this, $id);
     }
 }
 

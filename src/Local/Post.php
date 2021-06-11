@@ -21,7 +21,7 @@ class Post implements PostInterface
      * @param mixed $id
      * @param array $data
      */
-    public function __construct(PostCollection $postCollection, $id, $data = [])
+    public function __construct(PostCollection $postCollection, $id, array $data = [])
     {
         $this->derty = false;
         $this->postCollection = $postCollection;
@@ -82,11 +82,11 @@ class Post implements PostInterface
     }
 
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Pluf\WP\ItemInterface::setOrigin()
      */
-    public function setOrigin(PostInterface $data): self
+    public function setOrigin($data): self
     {
         return $this->setProperty('origin', $data);
     }
@@ -336,6 +336,9 @@ class Post implements PostInterface
         if (! array_key_exists('metas', $this->data)) {
             $this->data['metas'] = [];
         }
+        if (! array_key_exists($key, $this->data['metas'])) {
+            return null;
+        }
         return $this->data['metas'][$key];
     }
 
@@ -346,19 +349,11 @@ class Post implements PostInterface
      */
     public function setMeta(string $key, ?string $value = null): self
     {
-        if (! array_key_exists('metas', $this->data)) {
-            $this->data['metas'] = [];
-        }
-        
-        $oldValue = null;
-        if (array_key_exists($key, $this->data['metas'])) {
-           $oldValue = $this->data['metas'][$key];
-        }
-        
-        if($oldValue == $value){
+        $oldValue = $this->getMeta($key);
+        if ($oldValue == $value) {
             return $this;
         }
-        
+
         $this->data['metas'][$key] = $value;
         $this->setDerty(true);
         return $this;
@@ -371,10 +366,7 @@ class Post implements PostInterface
      */
     public function getMetas(): array
     {
-        if (! array_key_exists('metas', $this->data)) {
-            $this->data['metas'] = [];
-        }
-        return $this->data['metas'];
+        return $this->getProperty('metas', []);
     }
 }
 

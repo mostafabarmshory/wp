@@ -244,5 +244,15 @@ class PostCollection implements PostCollectionInterface
      */
     public function getCount(SearchParams $params): int
     {}
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\PostCollectionInterface::newPost()
+     */
+    public function newPost($id): PostInterface
+    {
+        return new Post($this, []);
+    }
 }
 

@@ -230,7 +230,7 @@ class Post implements PostInterface
         $this->dataDerty = true;
         return $this;
     }
-    
+
     public function getProperty(string $key, $default = null)
     {
         if (array_key_exists($key, $this->data)) {
@@ -299,7 +299,12 @@ class Post implements PostInterface
         return $this;
     }
 
-    public function setOrigin(PostInterface $data): self
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\ItemInterface::setOrigin()
+     */
+    public function setOrigin($data): self
     {}
 
     public function setDerty(bool $derty): self

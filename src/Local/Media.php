@@ -50,10 +50,11 @@ class Media implements MediaInterface
         return $this;
     }
 
-    public function setOrigin(MediaInterface $data)
+    public function setOrigin($data): self
     {
         $this->data['origin'] = $data->getData();
         // Update content
+        return $this;
     }
 
     /**
