@@ -207,11 +207,10 @@ class Post implements PostInterface
 
     public function setProperty(string $key, $value): self
     {}
-    
-    
+
     /**
-     * 
-     * {@inheritDoc}
+     *
+     * {@inheritdoc}
      * @see \Pluf\WP\PostInterface::getMetas()
      */
     public function getMetas(): array
@@ -219,5 +218,25 @@ class Post implements PostInterface
         return [];
     }
 
+    public function setOrigin(PostInterface $data): self
+    {}
+
+    public function setDerty(bool $derty): self
+    {}
+
+    public function setModifDate(string $date = null): self
+    {}
+
+    public function isDerty(): bool
+    {}
+
+    public function getProperty(string $key, $default = null)
+    {}
+
+    public function setUploadDate(string $date = null): self
+    {}
+
+    public function getUploadDate(): string
+    {}
 }
 

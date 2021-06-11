@@ -70,5 +70,16 @@ class PostCollection implements PostCollectionInterface
      */
     public function performTransaction(PostInterface $post, string $transactionName, array $params = []): PostInterface
     {}
+    
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Pluf\WP\CollectionInterface::getCount()
+     */
+    public function getCount(SearchParams $params): int
+    {
+        return 0;
+    }
+
 }
 

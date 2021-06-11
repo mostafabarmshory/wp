@@ -230,8 +230,8 @@ class Post implements PostInterface
         $this->dataDerty = true;
         return $this;
     }
-
-    public function getProperty(string $key)
+    
+    public function getProperty(string $key, $default = null)
     {
         if (array_key_exists($key, $this->data)) {
             return $this->data[$key];
@@ -298,5 +298,23 @@ class Post implements PostInterface
         $this->content = $content;
         return $this;
     }
+
+    public function setOrigin(PostInterface $data): self
+    {}
+
+    public function setDerty(bool $derty): self
+    {}
+
+    public function setModifDate(string $date = null): self
+    {}
+
+    public function isDerty(): bool
+    {}
+
+    public function setUploadDate(string $date = null): self
+    {}
+
+    public function getUploadDate(): string
+    {}
 }
 

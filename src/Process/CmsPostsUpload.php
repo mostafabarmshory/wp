@@ -5,54 +5,91 @@ use Pluf\Scion\UnitTrackerInterface;
 use Pluf\WP\CmsAbstract;
 use Pluf\WP\SearchParams;
 use Pluf\WP\Cli\Output;
+use Pluf\WP\PostInterface;
+use Pluf\WP\PostCollectionInterface;
 
-class CmsPostsUpload
+class CmsPostsUpload extends ProcessWithProgress
 {
 
     public function __invoke(UnitTrackerInterface $unitTracker, CmsAbstract $sourceCms, CmsAbstract $distCms, Output $output)
     {
-        $output->print("Getting start to uplad posts");
-
         $params = new SearchParams();
         $params->perPage = 20;
-        $it = $sourceCms->postCollection()->find($params);
-        $postCollection = $distCms->postCollection();
-        $index = 0;
-        while ($it->valid()) {
-            $index ++;
-            $post = $it->next();
-            // if vebose
-            $output->print(".");
+        $srcPostCollection = $sourceCms->postCollection();
 
-            // 1- create content
-            $tpost = $postCollection->getByName($post->getName());
-            if (! isset($tpost)) {
-                $tpost = $postCollection->put($post);
-            }
-            
-            // 2- update info
-            if (! isset($tpost) || $post->getModifDate() > $tpost->getModifDate()) {
-                $tpost
-                    // fill data
-                    ->setTitle($post->getTitle($post))
-                    ->setMediaType($post->getMediaType())
-                    ->setMimeType($post->getMimeType())
-                    ->setFileName($post->getFileName())
-                    // fill content
-                    ->setContent($post->getContent($post));
-                // fill meta
-                $metas = $post->getMetas();
-                foreach ($metas as $key => $value){
-                    $tpost->setMeta($key, $value);
+        $this->setTitle("Upload Posts")
+            ->setDescription("Upload and update remote posts")
+            ->setTotalSteps($srcPostCollection->getCount($params))
+            ->setOutput($output)
+            ->start();
+
+        $it = $srcPostCollection->find($params);
+        $postCollection = $distCms->postCollection();
+        while ($it->valid()) {
+            $post = $it->current();
+
+            // If the post is not changed from the latest upload it is ignored
+            if ($this->isPostChanged($post)) {
+
+                // create content
+                $tpost = $postCollection->getByName($post->getName());
+                if (! isset($tpost)) {
+                    $tpost = $postCollection->put($post);
                 }
-                $postCollection->update($tpost);
+
+                // 2- update info
+                if (! isset($tpost) || $post->getModifDate() > $tpost->getModifDate()) {
+                    $tpost->setTitle($post->getTitle())
+                        ->setMediaType($post->getMediaType())
+                        ->setMimeType($post->getMimeType())
+                        ->setFileName($post->getFileName())
+                        ->setContent($post->getContent());
+                    // fill meta
+                    $metas = $post->getMetas();
+                    foreach ($metas as $key => $value) {
+                        $tpost->setMeta($key, $value);
+                    }
+                    $postCollection->update($tpost);
+                    $postCollection->performTransaction($tpost, 'touch', []);
+                }
+
+                // TODO: 5- update tags
+                // TODO: 6- update categories
+
+                $this->markPostIsClean($srcPostCollection, $post);
             }
             
-            // TODO: 5- update tags
-            // TODO: 6- update categories
+            // next loop
+            $it->next();
+            $this->stepComplete();
         }
-        $output->println("[ok]");
+        $this->done();
+
         return $unitTracker->next();
+    }
+
+    /**
+     * Checks if the post is changed from the lat time update
+     *
+     * @param PostInterface $post
+     * @return bool
+     */
+    public function isPostChanged(PostInterface $post): bool
+    {
+        $uploadTime = $post->getUploadDate();
+        return empty($uploadTime) || $post->getModifDate() > $uploadTime;
+    }
+
+    /**
+     * Sets upload date and save the post
+     *
+     * @param PostCollectionInterface $postCollection
+     * @param PostInterface $post
+     */
+    public function markPostIsClean(PostCollectionInterface $postCollection, PostInterface $post)
+    {
+        $post->setUploadDate();
+        $postCollection->update($post);
     }
 }
 

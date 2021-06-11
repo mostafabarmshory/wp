@@ -25,7 +25,8 @@ class CmsUpdatePostsCanonicalLink
             $it = $sourceCms->postCollection()->find($params);
             $index = 0;
             while ($it->valid()) {
-                $post = $it->next();
+                $post = $it->current();
+                $it->next();
                 $post->setMeta('link.canonical', $canonicalLinkPrefix . "/" . $post->getName());
                 $sourceCms->postCollection()->update($post);
 

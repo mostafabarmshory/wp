@@ -96,6 +96,8 @@ class PostCollection implements PostCollectionInterface
         $myfile = fopen($path, "w");
         fwrite($myfile, $toW);
         fclose($myfile);
+        
+        $post->setDerty(false);
     }
 
     /**
@@ -131,7 +133,9 @@ class PostCollection implements PostCollectionInterface
      */
     public function update(PostInterface $post): PostInterface
     {
-        $this->save($post);
+        if($post->isDerty()){
+            $this->save($post);
+        }
         return $post;
     }
 
@@ -152,5 +156,16 @@ class PostCollection implements PostCollectionInterface
      */
     public function performTransaction(PostInterface $post, string $transactionName, array $params = []): PostInterface
     {}
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\CollectionInterface::getCount()
+     */
+    public function getCount(SearchParams $params): int
+    {
+        $it = new PostIterator($this, $params);
+        return $it->size();
+    }
 }
 

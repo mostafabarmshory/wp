@@ -20,5 +20,7 @@ interface CollectionInterface
      * @return Iterator
      */
     public function find(SearchParams $params): Iterator;
+
+    public function getCount(SearchParams $params): int;
 }
 

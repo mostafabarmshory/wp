@@ -12,11 +12,42 @@ class Post implements PostInterface
 
     public PostCollection $postCollection;
 
+    public bool $derty;
+
+    /**
+     * Creates new instance of local post
+     *
+     * @param PostCollection $postCollection
+     * @param mixed $id
+     * @param array $data
+     */
     public function __construct(PostCollection $postCollection, $id, $data = [])
     {
+        $this->derty = false;
         $this->postCollection = $postCollection;
         $this->id = $id;
         $this->data = $data;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\PostInterface::isDerty()
+     */
+    public function isDerty(): bool
+    {
+        return $this->derty;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\PostInterface::setDerty()
+     */
+    public function setDerty(bool $derty): self
+    {
+        $this->derty = $derty;
+        return $this;
     }
 
     /**
@@ -50,11 +81,14 @@ class Post implements PostInterface
         return $this;
     }
 
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Pluf\WP\ItemInterface::setOrigin()
+     */
     public function setOrigin(PostInterface $data): self
     {
-        $this->data['origin'] = $data->getData();
-        // Update content
-        return $this;
+        return $this->setProperty('origin', $data);
     }
 
     /**
@@ -64,7 +98,7 @@ class Post implements PostInterface
      */
     public function getOrigin(): array
     {
-        return $this->data['origin'];
+        return $this->getProperty('origin');
     }
 
     /**
@@ -74,8 +108,7 @@ class Post implements PostInterface
      */
     public function setContent(string $content): self
     {
-        $this->data['content'] = $content;
-        return $this;
+        return $this->setProperty('content', $content);
     }
 
     /**
@@ -85,7 +118,7 @@ class Post implements PostInterface
      */
     public function getContent(): ?string
     {
-        return $this->data['content'];
+        return $this->getProperty('content');
     }
 
     /**
@@ -95,8 +128,8 @@ class Post implements PostInterface
      */
     public function setName(string $name): self
     {
-        $this->data['name'] = $name;
-        return $this;
+        return $this->setProperty('name', $name);
+        ;
     }
 
     /**
@@ -106,11 +139,12 @@ class Post implements PostInterface
      */
     public function getName(): string
     {
-        if (! array_key_exists('name', $this->data)) {
+        $name = $this->getProperty('name');
+        if (empty($name)) {
             $name = md5($this->postCollection->parent->baseDir) . '-' . $this->id;
             $this->setName($name);
         }
-        return $this->data['name'];
+        return $name;
     }
 
     /**
@@ -120,7 +154,7 @@ class Post implements PostInterface
      */
     public function getMimeType(): ?string
     {
-        return $this->data['mime_type'];
+        return $this->getProperty('mime_type');
     }
 
     /**
@@ -130,8 +164,7 @@ class Post implements PostInterface
      */
     public function setMimeType(string $mimeType): self
     {
-        $this->data['mime_type'] = $mimeType;
-        return $this;
+        return $this->setProperty('mime_type', $mimeType);
     }
 
     /**
@@ -141,8 +174,7 @@ class Post implements PostInterface
      */
     public function setMediaType(string $mediaType): self
     {
-        $this->data['media_type'] = $mediaType;
-        return $this;
+        return $this->setProperty('media_type', $mediaType);
     }
 
     /**
@@ -152,7 +184,7 @@ class Post implements PostInterface
      */
     public function getMediaType(): ?string
     {
-        return $this->data['media_type'];
+        return $this->getProperty('media_type');
     }
 
     /**
@@ -162,7 +194,7 @@ class Post implements PostInterface
      */
     public function getFIleName(): ?string
     {
-        return $this->data['file_name'];
+        return $this->getProperty('file_name');
     }
 
     /**
@@ -172,8 +204,7 @@ class Post implements PostInterface
      */
     public function setFileName(string $fileName): self
     {
-        $this->data['file_name'] = $fileName;
-        return $this;
+        return $this->setProperty('file_name', $fileName);
     }
 
     /**
@@ -183,8 +214,7 @@ class Post implements PostInterface
      */
     public function setTitle(string $title): self
     {
-        $this->data['title'] = $title;
-        return $this;
+        return $this->setProperty('title', $title);
     }
 
     /**
@@ -194,7 +224,7 @@ class Post implements PostInterface
      */
     public function getTitle(): ?string
     {
-        return $this->data['title'];
+        return $this->getProperty('title');
     }
 
     /**
@@ -204,16 +234,20 @@ class Post implements PostInterface
      */
     public function getModifDate(): string
     {
-        return $this->data['modif_dtime'];
+        return $this->getProperty('modif_dtime', gmdate("Y-m-d H:i:s"));
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\PostInterface::setModifDate()
+     */
     public function setModifDate(string $date = null): self
     {
         if (empty($date)) {
             $date = gmdate("Y-m-d H:i:s");
         }
-        $this->data['modif_dtime'] = $date;
-        return $this;
+        return $this->setProperty('modif_dtime', $date);
     }
 
     /**
@@ -223,8 +257,7 @@ class Post implements PostInterface
      */
     public function setDescription(string $description): self
     {
-        $this->data['description'] = $description;
-        return $this;
+        return $this->setProperty('description', $description);
     }
 
     /**
@@ -234,9 +267,35 @@ class Post implements PostInterface
      */
     public function getDescription(): ?string
     {
-        return $this->data['description'];
+        return $this->getProperty('description');
     }
 
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\PostInterface::setUploadDate()
+     */
+    public function setUploadDate(string $date = null): self
+    {
+        if (empty($date)) {
+            $datetime = new \DateTime(null, new \DateTimeZone('UTC'));
+            $datetime->modify('+5 minutes');
+            $date = $datetime->format("Y-m-d H:i:s");
+        }
+        return $this->setProperty('upload_dtime', $date);
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\PostInterface::getUploadDate()
+     */
+    public function getUploadDate(): string
+    {
+        return $this->getProperty('upload_dtime', '');
+    }
+
+    // ------------------------------------------------Properties----------------------------
     /**
      *
      * {@inheritdoc}
@@ -244,8 +303,25 @@ class Post implements PostInterface
      */
     public function setProperty(string $key, $value): self
     {
-        $this->data[$key] = $value;
+        $oldValue = $this->getProperty($key);
+        if ($oldValue != $value) {
+            $this->data[$key] = $value;
+            $this->setDerty(true);
+        }
         return $this;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\PostInterface::getProperty()
+     */
+    public function getProperty(string $key, $default = null)
+    {
+        if (array_key_exists($key, $this->data)) {
+            return $this->data[$key];
+        }
+        return $default;
     }
 
     // ---------------------------------------------------- metas ---------------------------
@@ -273,7 +349,18 @@ class Post implements PostInterface
         if (! array_key_exists('metas', $this->data)) {
             $this->data['metas'] = [];
         }
+        
+        $oldValue = null;
+        if (array_key_exists($key, $this->data['metas'])) {
+           $oldValue = $this->data['metas'][$key];
+        }
+        
+        if($oldValue == $value){
+            return $this;
+        }
+        
         $this->data['metas'][$key] = $value;
+        $this->setDerty(true);
         return $this;
     }
 

@@ -25,7 +25,8 @@ class CmsUpdatePostsContentByOrigin
         $it = $sourceCms->postCollection()->find($params);
         $index = 0;
         while ($it->valid()) {
-            $post = $it->next();
+            $post = $it->current();
+            $it->next();
             $post->setContent($this->fetchContent($post))
                 ->setTitle($this->fetchTitle($post))
                 ->setMeta('title', $this->fetchTitle($post))

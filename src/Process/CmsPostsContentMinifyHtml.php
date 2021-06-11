@@ -24,7 +24,8 @@ class CmsPostsContentMinifyHtml
         $it = $sourceCms->postCollection()->find($params);
         $index = 0;
         while ($it->valid()) {
-            $post = $it->next();
+            $post = $it->current();
+            $it->next();
 
             $post->setContent($this->minifyHtml($post->getContent()));
             $sourceCms->postCollection()->update($post);

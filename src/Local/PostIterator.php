@@ -70,7 +70,7 @@ class PostIterator implements Iterator
         $directory = $this->postCollection->getPath();
         $this->index = 0;
         $this->files = scandir($directory);
-        while (is_dir($this->files[$this->index]) && $this->index < count($this->files)) {
+        while ($this->index < count($this->files) && is_dir($this->files[$this->index])) {
             $this->index ++;
         }
     }
@@ -83,6 +83,18 @@ class PostIterator implements Iterator
     public function key()
     {
         return $this->index;
+    }
+    
+    
+    public function size(): int {
+        // load files
+        $directory = $this->postCollection->getPath();
+        $index = 0;
+        $files = scandir($directory);
+        while ($index < count($files) && is_dir($files[$index])) {
+            $index ++;
+        }
+        return count($files) - $index;
     }
 }
 

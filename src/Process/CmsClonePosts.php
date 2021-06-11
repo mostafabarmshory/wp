@@ -19,7 +19,8 @@ class CmsClonePosts
         $postCollection  = $distCms->postCollection();
         $index = 0;
         while ($it->valid()) {
-            $post = $it->next();
+            $post = $it->current();
+            $it->next();
             $tpost = $postCollection->getById($post->getId());
             if(isset($tpost)){
                 // Post exist we break the loop

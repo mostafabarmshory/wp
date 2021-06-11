@@ -21,7 +21,8 @@ class CmsPostsSetDescription
         $index = 0;
         while ($it->valid()) {
             $index ++;
-            $post = $it->next();
+            $post = $it->current();
+            $it->next();
             $output->print(".");
 
             // 1- create content

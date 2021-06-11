@@ -24,7 +24,8 @@ class CmsPostsContentRemoveStyle
         $it = $sourceCms->postCollection()->find($params);
         $index = 0;
         while ($it->valid()) {
-            $post = $it->next();
+            $post = $it->current();
+            $it->next();
 
             $re = '/style=".*?"/i';
             $content = preg_replace($re, "", $post->getContent());

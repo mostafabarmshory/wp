@@ -236,5 +236,13 @@ class PostCollection implements PostCollectionInterface
         }
         return $content;
     }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\CollectionInterface::getCount()
+     */
+    public function getCount(SearchParams $params): int
+    {}
 }
 

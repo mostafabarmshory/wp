@@ -41,7 +41,48 @@ interface PostInterface extends ItemInterface
     public function getDescription(): ?string;
 
     public function getModifDate(): string;
+    public function setModifDate(string $date = null): self;
 
+    
+    /**
+     * Set value as the property
+     * 
+     * @param string $key
+     * @param mixed $value
+     * @return self
+     */
     public function setProperty(string $key, $value): self;
+    
+    /**
+     * Gets property value
+     * 
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    public function getProperty(string $key, $default = null);
+    
+    
+    
+    public function getUploadDate(): string;
+    public function setUploadDate(string $date = null): self;
+    
+    
+    /**
+     * Return true if there is a modification in the memory instance
+     * 
+     * For example you may load a post and then change a propertye of it. Then isDerty returns ture.
+     * 
+     * @return bool true if there is change in loaded instance
+     */
+    public function isDerty(): bool;
+    
+    /**
+     * Marks the post as a derty one
+     * 
+     * @param bool $derty the derty state
+     * @return self the post itself
+     */
+    public function setDerty(bool $derty): self;
 }
 

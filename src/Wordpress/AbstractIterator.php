@@ -20,7 +20,7 @@ abstract class AbstractIterator implements Iterator
     public int $perPage;
 
     public int $index;
-
+    
     public ?array $data;
 
     public $client;
@@ -85,6 +85,9 @@ abstract class AbstractIterator implements Iterator
      */
     public function current()
     {
+        if (! array_key_exists($this->index, $this->data)) {
+            return null;
+        }
         $data = $this->data[$this->index];
         return $this->createNewInstance($data);
     }
@@ -99,8 +102,8 @@ abstract class AbstractIterator implements Iterator
         $this->isValid = true;
         $this->currentPage = 0;
         $this->perPage = $this->params->perPage;
-        $this->index = $this->params->perPage;
-        $this->data = null;
+        $this->index = 0;
+        $this->data = [];
     }
 
     /**
@@ -120,7 +123,10 @@ abstract class AbstractIterator implements Iterator
      */
     private function endOfPage(): bool
     {
-        return (! empty($this->data) && $this->index >= sizeof($this->data) - 1) || $this->index >= $this->perPage;
+        return 
+            $this->currentPage == 0 || 
+            (! empty($this->data) && $this->index >= sizeof($this->data) - 1) || 
+            $this->index >= $this->perPage;
     }
 
     /**
@@ -151,8 +157,10 @@ abstract class AbstractIterator implements Iterator
                     'url' => $this->client->getConfig('base_uri')
                 ]);
                 $error = null;
+                $this->isValid = true;
                 break;
             } catch (\Throwable $e) {
+                $this->isValid = false;
                 $error = $e;
                 $count ++;
                 sleep($count * $interval);

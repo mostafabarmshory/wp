@@ -25,7 +25,8 @@ class CmsPostSetProperty
         $it = $collection->find($params);
         $index = 0;
         while ($it->valid()) {
-            $post = $it->next();
+            $post = $it->current();
+            $it->next();
             $post->setProperty($propertyKey, $propertyValue);
             $collection->update($post);
 

@@ -113,5 +113,8 @@ class MediaCollection implements MediaCollectionInterface
         $media->setData($data);
         return $media;
     }
+    public function getCount(SearchParams $params): int
+    {}
+
 }
 
