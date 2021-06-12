@@ -39,16 +39,25 @@ class CmsPostsUploadTest extends TestCase
             ->willReturn(1);
         $sourcePostCollection->method('find')
             ->willReturn(new ArrayIterator([$sourcePost]));
-        $sourcePostCollection->expects($this->never())
-            ->method('update');
         
         // Source cms
         $sourceCms = $this->createStub(CmsAbstract::class);
         $sourceCms->method('postCollection')
             ->willReturn($sourcePostCollection);
 
+            
+        $distPost = $this->createStub(PostInterface::class);
+        $distPost->method('getUploadDate')
+            ->willReturn('2020-01-01 00:10:00');
+        $distPost->method('getModifDate')
+            ->willReturn('2020-01-01 00:00:00');
+            
         // Dist post collection
         $distPostCollection = $this->createStub(PostCollectionInterface::class);
+        $distPostCollection->method('getByName')
+            ->willReturn($distPost);
+        $distPostCollection->expects($this->never())
+            ->method('update');
             
         // dist cms
         $distCms = $this->createStub(CmsAbstract::class);

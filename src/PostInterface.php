@@ -10,7 +10,7 @@ namespace Pluf\WP;
 interface PostInterface extends ItemInterface
 {
 
-    public function setContent(string $content): self;
+    public function setContent(?string $content): self;
 
     public function getContent(): ?string;
 
@@ -20,28 +20,28 @@ interface PostInterface extends ItemInterface
 
     public function getMetas(): array;
 
-    public function setMimeType(string $mimeType): self;
+    public function setMimeType(?string $mimeType): self;
 
     public function getMimeType(): ?string;
 
-    public function setMediaType(string $mediaType): self;
+    public function setMediaType(?string $mediaType): self;
 
     public function getMediaType(): ?string;
 
-    public function setFileName(string $fileName): self;
+    public function setFileName(?string $fileName): self;
 
     public function getFileName(): ?string;
 
-    public function setTitle(string $title): self;
+    public function setTitle(?string $title): self;
 
     public function getTitle(): ?string;
 
-    public function setDescription(string $description): self;
+    public function setDescription(?string $description): self;
 
     public function getDescription(): ?string;
 
     public function getModifDate(): string;
-    public function setModifDate(string $date = null): self;
+    public function setModifDate(?string $date = null): self;
 
     
     /**

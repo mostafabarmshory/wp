@@ -59,17 +59,11 @@ class PostCollection implements PostCollectionInterface
             'alt' => get_class($post)
         ]);
 
-        // TODO:
-        if ($post->dataDerty) {
+        if ($post->isDerty()) {
             $this->saveData($post);
-        }
-
-        if ($post->metasDerty) {
             $this->saveMetas($post);
-        }
-
-        if ($post->contentDerty) {
             $this->saveContent($post);
+            $post->setDerty(false);
         }
         return $post;
     }
@@ -179,8 +173,16 @@ class PostCollection implements PostCollectionInterface
             'body' => $post->getContent()
         ]);
         $data = json_decode($response->getBody(), true);
-        $post->setData($data);
-        $post->contentDerty = false;
+        if(is_array($data)){
+            foreach ($data as $key=>$value){
+                $post->setProperty($key, $value);
+            }
+        } else {
+            $vars = get_object_vars ( $data );
+            foreach ($vars as $key=>$value){
+                $post->setProperty($key, $value);
+            }
+        }
     }
 
     // ------------------------------------------------------ fetch --------------------------------------

@@ -125,6 +125,7 @@ class PostCollection implements PostCollectionInterface
             $data = [];
         }
         $post->setData($data);
+        $post->setId($id);
         return $post;
     }
 

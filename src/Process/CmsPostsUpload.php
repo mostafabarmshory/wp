@@ -27,38 +27,26 @@ class CmsPostsUpload extends ProcessWithProgress
         $postCollection = $distCms->postCollection();
         while ($it->valid()) {
             $post = $it->current();
+            $tpost = $postCollection->getByName($post->getName());
 
-            // If the post is not changed from the latest upload it is ignored
-            if ($this->isPostChanged($post)) {
-
-                // create content
-                $tpost = $postCollection->getByName($post->getName());
-                if (! isset($tpost)) {
-                    $tpost = $postCollection->put($post);
-                }
-
-                // 2- update info
-                if (! isset($tpost) || $post->getModifDate() > $tpost->getModifDate()) {
-                    $tpost->setTitle($post->getTitle())
-                        ->setMediaType($post->getMediaType())
-                        ->setMimeType($post->getMimeType())
-                        ->setFileName($post->getFileName())
-                        ->setContent($post->getContent());
-                    // fill meta
-                    $metas = $post->getMetas();
-                    foreach ($metas as $key => $value) {
-                        $tpost->setMeta($key, $value);
-                    }
-                    $postCollection->update($tpost);
-                    $postCollection->performTransaction($tpost, 'touch', []);
-                }
-
-                // TODO: 5- update tags
-                // TODO: 6- update categories
-
-                $this->markPostIsClean($srcPostCollection, $post);
+            if (empty($tpost)) {
+                // Create the post
+                $tpost = $postCollection->newPost($post->getId());
+                $this->fillFrom($tpost, $post);
+                $postCollection->put($tpost);
+                $postCollection->performTransaction($tpost, 'touch', []);
+            } else if ($this->isPostChanged($post) || $this->isSourceNewer($post, $tpost)) {
+                // update
+                $this->fillFrom($tpost, $post);
+                $postCollection->update($tpost);
+                $postCollection->performTransaction($tpost, 'touch', []);
+            } else if ($this->isTargetNewer($post, $tpost)) {
+                // sync with remote
+                $this->fillFrom($post, $tpost);
+                $srcPostCollection->update($post);
             }
-            
+            $this->markPostIsClean($srcPostCollection, $post);
+
             // next loop
             $it->next();
             $this->stepComplete();
@@ -66,6 +54,21 @@ class CmsPostsUpload extends ProcessWithProgress
         $this->done();
 
         return $unitTracker->next();
+    }
+
+    public function fillFrom(PostInterface $target, PostInterface $source)
+    {
+        $target->setTitle($source->getTitle())
+            ->setDescription($source->getDescription())
+            ->setMediaType($source->getMediaType())
+            ->setMimeType($source->getMimeType())
+            ->setFileName($source->getFileName())
+            ->setContent($source->getContent())
+            ->setName($source->getName());
+        $metas = $source->getMetas();
+        foreach ($metas as $key => $value) {
+            $target->setMeta($key, $value);
+        }
     }
 
     /**
@@ -90,6 +93,22 @@ class CmsPostsUpload extends ProcessWithProgress
     {
         $post->setUploadDate();
         $postCollection->update($post);
+    }
+    
+    public function isSourceNewer(PostInterface $source, PostInterface $target): bool
+    {
+        $sourceModifTime = $source->getModifDate();
+        $targetModifiTIme = $target->getModifDate();
+        
+        return $sourceModifTime > $targetModifiTIme;
+    }
+    
+    public function isTargetNewer(PostInterface $source, PostInterface $target): bool
+    {
+        $sourceModifTime = $source->getModifDate();
+        $targetModifiTIme = $target->getModifDate();
+        
+        return $sourceModifTime < $targetModifiTIme;
     }
 }
 

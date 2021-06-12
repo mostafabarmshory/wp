@@ -1,10 +1,10 @@
 <?php
 namespace Pluf\WP\Wordpress;
 
+use Pluf\WP\AbstractPost;
 use Pluf\WP\PostInterface;
-use Pluf\WP\WpException;
 
-class Post implements PostInterface
+class Post  extends AbstractPost implements PostInterface
 {
 
     /**
@@ -19,36 +19,7 @@ class Post implements PostInterface
         $this->data = $data;
     }
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Pluf\WP\ItemInterface::getId()
-     */
-    public function getId()
-    {
-        return $this->data['id'];
-    }
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Pluf\WP\ItemInterface::getData()
-     */
-    public function getData(): array
-    {
-        return $this->data;
-    }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Pluf\WP\ItemInterface::setData()
-     */
-    public function setData($data): self
-    {
-        $this->data = $data;
-        return $this;
-    }
 
     /**
      *
@@ -62,25 +33,6 @@ class Post implements PostInterface
         return $url['host'];
     }
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Pluf\WP\PostInterface::setName()
-     */
-    public function setName(string $name): self
-    {
-        throw new WpException("Imposible to set name for a Wordpress post");
-    }
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Pluf\WP\PostInterface::setContent()
-     */
-    public function setContent(string $content): self
-    {
-        throw new WpException("Imposible to set content for a Wordpress post");
-    }
 
     /**
      * Generates unique name of the content
@@ -90,33 +42,16 @@ class Post implements PostInterface
      */
     public function getName(): string
     {
-        return md5($this->getOrigin()) . '-' . $this->getId();
+        return $this->getProperty('name', md5($this->getOrigin()) . '-' . $this->getId());
     }
 
-    public function getMeta(string $key): ?string
-    {}
-
-    public function setMeta(string $key, ?string $value = null): self
-    {}
-
-    public function getMimeType(): ?string
-    {}
-
-    public function getFIleName(): ?string
-    {}
-
-    public function getContent(): ?string
-    {}
-
-    public function setMimeType(string $mimeType): self
-    {}
 
     /**
      *
      * {@inheritdoc}
      * @see \Pluf\WP\PostInterface::setTitle()
      */
-    public function setTitle(string $title): self
+    public function setTitle(?string $title): self
     {
         $this->data["title"]["rendered"] = $title;
     }
@@ -126,7 +61,7 @@ class Post implements PostInterface
      * {@inheritdoc}
      * @see \Pluf\WP\PostInterface::setMediaType()
      */
-    public function setMediaType(string $mediaType): self
+    public function setMediaType(?string $mediaType): self
     {
         $this->data['type'] = $mediaType;
     }
@@ -141,13 +76,6 @@ class Post implements PostInterface
         return $this->data['type'];
     }
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Pluf\WP\PostInterface::setFileName()
-     */
-    public function setFileName(string $fileName): self
-    {}
 
     /**
      *
@@ -199,49 +127,5 @@ class Post implements PostInterface
         return strtotime($date);
     }
 
-    public function setDescription(string $description): self
-    {}
-
-    public function getDescription(): ?string
-    {}
-
-    public function setProperty(string $key, $value): self
-    {}
-
-    /**
-     *
-     * {@inheritdoc}
-     * @see \Pluf\WP\PostInterface::getMetas()
-     */
-    public function getMetas(): array
-    {
-        return [];
-    }
-
-    /**
-     * 
-     * {@inheritDoc}
-     * @see \Pluf\WP\ItemInterface::setOrigin()
-     */
-    public function setOrigin($data): self
-    {}
-
-    public function setDerty(bool $derty): self
-    {}
-
-    public function setModifDate(string $date = null): self
-    {}
-
-    public function isDerty(): bool
-    {}
-
-    public function getProperty(string $key, $default = null)
-    {}
-
-    public function setUploadDate(string $date = null): self
-    {}
-
-    public function getUploadDate(): string
-    {}
 }
 
