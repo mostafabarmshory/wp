@@ -179,6 +179,7 @@ abstract class AbstractPost implements PostInterface
      */
     public function setContent(?string $content): self
     {
+        echo 'content is change:?' . $this->getProperty('content') == $content;
         return $this->setProperty('content', $content);
     }
 
@@ -345,7 +346,7 @@ abstract class AbstractPost implements PostInterface
     {
         if (empty($date)) {
             $datetime = new \DateTime(null, new \DateTimeZone('UTC'));
-            $datetime->modify('+5 minutes');
+            // $datetime->modify('+5 minutes');
             $date = $datetime->format("Y-m-d H:i:s");
         }
         return $this->setProperty('upload_dtime', $date);

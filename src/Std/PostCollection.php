@@ -144,8 +144,7 @@ class PostCollection implements PostCollectionInterface
             'name' => $post->getName()
         ]);
         $data = json_decode($response->getBody(), true);
-        $post->setData($data);
-        $post->dataDerty = false;
+        self::fillProperties($post, $data);
     }
 
     private function saveMetas(Post $post)
@@ -159,7 +158,6 @@ class PostCollection implements PostCollectionInterface
                 ]
             ]);
         }
-        $post->metasDerty = false;
     }
 
     private function saveContent(Post $post)
@@ -173,6 +171,10 @@ class PostCollection implements PostCollectionInterface
             'body' => $post->getContent()
         ]);
         $data = json_decode($response->getBody(), true);
+        self::fillProperties($post, $data);
+    }
+    
+    static function fillProperties($post, $data){
         if(is_array($data)){
             foreach ($data as $key=>$value){
                 $post->setProperty($key, $value);

@@ -45,7 +45,7 @@ class PostIterator implements Iterator
      */
     public function valid()
     {
-        return $this->index < count($this->files) - 1;
+        return $this->index < count($this->files);
     }
 
     /**
@@ -55,6 +55,9 @@ class PostIterator implements Iterator
      */
     public function current()
     {
+        if (! $this->valid()) {
+            return null;
+        }
         $path = $this->files[$this->index];
         return $this->postCollection->getById(basename($path));
     }
@@ -84,9 +87,9 @@ class PostIterator implements Iterator
     {
         return $this->index;
     }
-    
-    
-    public function size(): int {
+
+    public function size(): int
+    {
         // load files
         $directory = $this->postCollection->getPath();
         $index = 0;

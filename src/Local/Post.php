@@ -3,6 +3,7 @@ namespace Pluf\WP\Local;
 
 use Pluf\WP\PostInterface;
 use Pluf\WP\AbstractPost;
+use Pluf\WP\Process\WordpressUtils;
 
 class Post extends AbstractPost implements PostInterface
 {
@@ -37,6 +38,36 @@ class Post extends AbstractPost implements PostInterface
             $this->setName($name);
         }
         return $name;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\AbstractPost::getContent()
+     */
+    public function getContent(): ?string
+    {
+        $str = parent::getContent();
+        if (empty($str)) {
+            $str = WordpressUtils::fetchContent($this);
+            $this->setContent($str);
+        }
+        return $str;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\AbstractPost::getTitle()
+     */
+    public function getTitle(): ?string
+    {
+        $str = parent::getTitle();
+        if (empty($str)) {
+            $str = WordpressUtils::fetchTitle($this);
+            $this->setTitle($str);
+        }
+        return $str;
     }
 }
 

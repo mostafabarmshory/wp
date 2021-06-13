@@ -85,11 +85,10 @@ class PostCollection implements PostCollectionInterface
     private function save(Post $post)
     {
         // generate data
-        $post->setModifDate();
+        // $post->setModifDate();
         $data = $post->getData();
         $toW = json_encode($data);
         if (JSON_ERROR_NONE != json_last_error()) {
-            var_dump($data);
             throw new \RuntimeException("fail to encode content :" . $post->getId() . ' msg:' . json_last_error_msg());
         }
 

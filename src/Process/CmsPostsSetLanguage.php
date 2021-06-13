@@ -6,32 +6,37 @@ use Pluf\WP\CmsAbstract;
 use Pluf\WP\SearchParams;
 use Pluf\WP\Cli\Output;
 
-class CmsPostsSetLanguage
+class CmsPostsSetLanguage  extends ProcessWithProgress
 {
 
     public function __invoke(UnitTrackerInterface $unitTracker, CmsAbstract $sourceCms, Output $output, ?string $updateLanguage = null)
     {
-        $output->print("Setting language of posts");
-        if (empty($updateLanguage)) {
-            $output->print("........... [not found]");
-        }
-
+        
         $params = new SearchParams();
         $params->perPage = 20;
-        $postCollection = $sourceCms->postCollection();
-        $it = $postCollection->find($params);
-        $index = 0;
-        while ($it->valid()) {
-            $index ++;
-            $post = $it->current();
-            $it->next();
-            $output->print(".");
-
-            // 1- create content
-            $post->setMeta('language', $updateLanguage);
-            $postCollection->update($post);
+        $sourcePostCollection = $sourceCms->postCollection();
+        $this->setTitle("Update Description")
+            ->setDescription("Generate a new description from the content")
+            ->setTotalSteps($sourcePostCollection->getCount($params))
+            ->setOutput($output)
+            ->start();
+        if (!empty($updateLanguage)) {
+            $it = $sourcePostCollection->find($params);
+            while ($it->valid()) {
+                $post = $it->current();
+                $it->next();
+    
+                // check language change and updagte
+                $oldLanguage = $post->getMeta('language');
+                if($oldLanguage != $updateLanguage){
+                    $post->setMeta('language', $updateLanguage)
+                        ->setModifDate();
+                    $sourcePostCollection->update($post);
+                }
+                $this->stepComplete();
+            }
         }
-        $output->println("[ok]");
+        $this->done();
         return $unitTracker->next();
     }
 }

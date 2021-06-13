@@ -12,8 +12,6 @@ class CmsClonePosts extends ProcessWithProgress
 
     public function __invoke(UnitTrackerInterface $unitTracker, CmsAbstract $sourceCms, CmsAbstract $distCms, Output $output)
     {
-        $output->print("Getting start to clone posts");
-
         $this->setTitle("Clone Posts")
             ->setDescription("Getting start to clone posts")
             ->setTotalSteps(- 1)
@@ -34,14 +32,14 @@ class CmsClonePosts extends ProcessWithProgress
             } else {
                 $tpost = $postCollection->newPost($post->getId());
                 $tpost->setOrigin($post->getData());
-                $tpost->setContent($this->fetchContent($tpost))
-                    ->setTitle($this->fetchTitle($tpost))
-                    ->setMeta('title', $this->fetchTitle($tpost))
+                $tpost->setContent(WordpressUtils::fetchContent($tpost))
+                    ->setTitle(WordpressUtils::fetchTitle($tpost))
+                    ->setMeta('title', WordpressUtils::fetchTitle($tpost))
                     ->setMeta('link.favicon', '/imgx/api/v2/cms/contents/favicon/content')
                     ->setMediaType('post')
                     ->setMimeType('text/html')
                     ->setFileName($tpost->getId() . '.html');
-                
+
                 $tpost = $postCollection->put($tpost);
             }
 
@@ -51,20 +49,6 @@ class CmsClonePosts extends ProcessWithProgress
         $this->done();
 
         return $unitTracker->next();
-    }
-    
-    
-    
-    public function fetchContent(PostInterface $post)
-    {
-        $origin = $post->getOrigin();
-        return $origin['content']['rendered'];
-    }
-    
-    public function fetchTitle(PostInterface $post)
-    {
-        $origin = $post->getOrigin();
-        return $origin['title']['rendered'];
     }
 }
 

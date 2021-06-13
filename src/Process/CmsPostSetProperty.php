@@ -12,28 +12,35 @@ use Pluf\WP\Cli\Output;
  * @author maso
  *        
  */
-class CmsPostSetProperty
+class CmsPostSetProperty extends ProcessWithProgress
 {
 
     public function __invoke(UnitTrackerInterface $unitTracker, CmsAbstract $sourceCms, Output $output, $propertyKey, $propertyValue)
     {
         $output->print("Setting property of a contetn");
-
         $params = new SearchParams();
         $params->perPage = 20;
-        $collection = $sourceCms->postCollection();
-        $it = $collection->find($params);
-        $index = 0;
+        $sourcePostCollection = $sourceCms->postCollection();
+        $this->setTitle("Set property")
+            ->setDescription("Used to set property to all documents")
+            ->setTotalSteps($sourcePostCollection->getCount($params))
+            ->setOutput($output)
+            ->start();
+
+        $it = $sourcePostCollection->find($params);
         while ($it->valid()) {
             $post = $it->current();
             $it->next();
-            $post->setProperty($propertyKey, $propertyValue);
-            $collection->update($post);
-
-            $index ++;
-            $output->print(".");
+            
+            $oldPropertyValue = $post->setProperty($propertyKey);
+            if($oldPropertyValue != $propertyValue){
+                $post->setModifDate()
+                    ->setProperty($propertyKey, $propertyValue);
+                $sourcePostCollection->update($post);
+            }
+            $this->stepComplete();
         }
-        $output->println(".");
+        $this->done();
         return $unitTracker->next();
     }
 }

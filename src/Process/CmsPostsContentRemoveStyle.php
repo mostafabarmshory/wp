@@ -12,32 +12,38 @@ use Pluf\WP\Cli\Output;
  * @author maso
  *        
  */
-class CmsPostsContentRemoveStyle
+class CmsPostsContentRemoveStyle extends ProcessWithProgress
 {
 
     public function __invoke(UnitTrackerInterface $unitTracker, CmsAbstract $sourceCms, Output $output)
     {
-        $output->print("Remove style");
-
         $params = new SearchParams();
         $params->perPage = 20;
-        $it = $sourceCms->postCollection()->find($params);
-        $index = 0;
+        $sourcePostCollection = $sourceCms->postCollection();
+        $this->setTitle("Remove inline style")
+            ->setDescription("Inline styles are not allowed int the content")
+            ->setTotalSteps($sourcePostCollection->getCount($params))
+            ->setOutput($output)
+            ->start();
+
+        $it = $sourcePostCollection->find($params);
         while ($it->valid()) {
             $post = $it->current();
             $it->next();
 
             $re = '/style=".*?"/i';
-            $content = preg_replace($re, "", $post->getContent());
-            $post->setContent($content);
-            $sourceCms->postCollection()->update($post);
+            $sourceContent = $post->getContent();
+            $content = preg_replace($re, "", $sourceContent);
 
-            $index ++;
-            // if vebose
-            $output->print(".");
+            if ($sourceContent != $content) {
+                $post->setContent($content)
+                    ->setModifDate();
+                $sourcePostCollection->update($post);
+            }
+
+            $this->stepComplete();
         }
-        $output->println(".");
+        $this->done();
         return $unitTracker->next();
     }
-
 }
