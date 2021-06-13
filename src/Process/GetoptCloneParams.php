@@ -35,11 +35,15 @@ class GetoptCloneParams
             "dist-pass:",
             // Options
             "verbose",
-            'base-dir:'
+            'base-dir:',
+            "last-upload-dtime:",
         );
         $result = getopt($shortopts, $longopts);
 
         $options = [
+            'lastUploadDtime' => $this->getOption($result, [
+                'last-upload-dtime'
+            ], null),
             'baseDir' => $this->getOption($result, [
                 'base-dir'
             ], '.'),

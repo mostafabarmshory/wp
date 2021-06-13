@@ -85,5 +85,14 @@ class Media implements MediaInterface
         $url = parse_url($link);
         return $url['host'];
     }
+    
+    /**
+     * 
+     * {@inheritDoc}
+     * @see \Pluf\WP\ItemInterface::setOrigin()
+     */
+    public function setOrigin($data): self
+    {}
+
 }
 

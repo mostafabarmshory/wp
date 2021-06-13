@@ -5,91 +5,43 @@ use Pluf\Scion\UnitTrackerInterface;
 use Pluf\WP\CmsAbstract;
 use Pluf\WP\SearchParams;
 use Pluf\WP\Cli\Output;
-use Pluf\WP\PostInterface;
 
-class CmsPostsSetDescription
+class CmsPostsSetDescription extends ProcessWithProgress
 {
 
     public function __invoke(UnitTrackerInterface $unitTracker, CmsAbstract $sourceCms, Output $output, $updateDescription = false)
     {
-        $output->print("Setting description of posts");
-
         $params = new SearchParams();
         $params->perPage = 20;
-        $postCollection = $sourceCms->postCollection();
-        $it = $postCollection->find($params);
-        $index = 0;
+        $sourcePostCollection = $sourceCms->postCollection();
+        $this->setTitle("Update Description")
+            ->setDescription("Generate a new description from the content")
+            ->setTotalSteps($sourcePostCollection->getCount($params))
+            ->setOutput($output)
+            ->start();
+
+        $it = $sourcePostCollection->find($params);
         while ($it->valid()) {
-            $index ++;
-            $post = $it->next();
-            $output->print(".");
+            $post = $it->current();
+            $it->next();
 
             // 1- create content
-            $description = $post->getDescription();
-            if (empty($description) || $updateDescription) {
-                $post->setDescription($this->generateDescription($post));
-                $post->setMeta('description', $this->generateSeDescription($post));
-                $post->setMeta('og:description', $this->generateOgDescription($post));
-                $postCollection->update($post);
+            $oldDescription = $post->getDescription();
+            if (empty($oldDescription) || $updateDescription) {
+                $description = WordpressUtils::generateDescription($post);
+                if ($description != $oldDescription) {
+                    $post->setDescription($description)
+                        ->setMeta('description', WordpressUtils::generateSeDescription($post))
+                        ->setMeta('og:description', WordpressUtils::generateOgDescription($post))
+                        ->setModifDate();
+                    $sourcePostCollection->update($post);
+                }
             }
+
+            $this->stepComplete();
         }
-        $output->println("[ok]");
+        $this->done();
         return $unitTracker->next();
-    }
-
-    public function generateDescription(PostInterface $post): string
-    {
-        $des = strip_tags($post->getContent());
-        return $this->clean($des, 255);
-    }
-
-    public function generateSeDescription(PostInterface $post): string
-    {
-        $des = strip_tags($post->getContent());
-        return $this->clean($des, 255);
-    }
-
-    public function generateOgDescription(PostInterface $post): string
-    {
-        $des = strip_tags($post->getContent());
-        return $this->clean($des, 255);
-    }
-
-    private function clean($str, $len)
-    {
-        $str = $this->minifyHtml($str);
-        if (strlen($str) > $len) {
-            $str = mb_substr($str, 0, $len);
-        }
-        return $str;
-    }
-
-    function minifyHtml($Html)
-    {
-        $Search = array(
-            '/(\n|^)(\x20+|\t)/',
-            '/(\n|^)\/\/(.*?)(\n|$)/',
-            '/\n/',
-            '/\<\!--.*?-->/',
-            '/(\x20+|\t)/', # Delete multispace (Without \n)
-            '/\>\s+\</', # strip whitespaces between tags
-            '/(\"|\')\s+\>/', # strip whitespaces between quotation ("') and end tags
-            '/=\s+(\"|\')/'
-        ); # strip whitespaces between = "'
-
-        $Replace = array(
-            "\n",
-            "\n",
-            " ",
-            "",
-            " ",
-            "><",
-            "$1>",
-            "=$1"
-        );
-
-        $Html = preg_replace($Search, $Replace, $Html);
-        return $Html;
     }
 }
 

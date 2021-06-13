@@ -111,4 +111,7 @@ class CategoryCollection implements CategoryCollectionInterface
         fwrite($myfile, json_encode($data));
         fclose($myfile);
     }
+    public function getCount(SearchParams $params): int
+    {}
+
 }

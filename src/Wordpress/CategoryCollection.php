@@ -47,5 +47,8 @@ class CategoryCollection implements CategoryCollectionInterface
 
     public function put(CategoryInterface $category): CategoryInterface
     {}
+    public function getCount(SearchParams $params): int
+    {}
+
 }
 

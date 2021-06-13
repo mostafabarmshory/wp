@@ -19,7 +19,6 @@ use Pluf\WP\Process\GetoptUpdateParams;
 use Pluf\WP\Process\Wellcome;
 use Pluf\WP\Process\CmsLoadDist;
 use Pluf\WP\Process\CmsLoadSource;
-use Pluf\WP\Process\CmsUpdatePostsContentByOrigin;
 use Pluf\WP\Process\CmsUpdatePostsCanonicalLink;
 use Pluf\WP\Process\CmsPostsSetDescription;
 use Pluf\WP\Process\CmsPostsSetLanguage;
@@ -43,9 +42,6 @@ $unitTracker = new UnitTracker([
     // TODO replace with update params
     GetoptUpdateParams::class,
     CmsLoadSource::class,
-    
-    // 1. Update content
-    CmsUpdatePostsContentByOrigin::class,
     
     // Update metas
     CmsPostsContentMinifyHtml::class,

@@ -57,5 +57,8 @@ class PageCollection implements PageCollectionInterface
      */
     public function find(SearchParams $params): Iterator
     {}
+
+    public function getCount(SearchParams $params): int
+    {}
 }
 

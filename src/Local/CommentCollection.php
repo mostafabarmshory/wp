@@ -57,5 +57,8 @@ class CommentCollection implements CommentCollectionInterface
      */
     public function find(SearchParams $params): Iterator
     {}
+    public function getCount(SearchParams $params): int
+    {}
+
 }
 

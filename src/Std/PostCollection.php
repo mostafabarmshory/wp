@@ -59,17 +59,11 @@ class PostCollection implements PostCollectionInterface
             'alt' => get_class($post)
         ]);
 
-        // TODO:
-        if ($post->dataDerty) {
+        if ($post->isDerty()) {
             $this->saveData($post);
-        }
-
-        if ($post->metasDerty) {
             $this->saveMetas($post);
-        }
-
-        if ($post->contentDerty) {
             $this->saveContent($post);
+            $post->setDerty(false);
         }
         return $post;
     }
@@ -150,8 +144,7 @@ class PostCollection implements PostCollectionInterface
             'name' => $post->getName()
         ]);
         $data = json_decode($response->getBody(), true);
-        $post->setData($data);
-        $post->dataDerty = false;
+        self::fillProperties($post, $data);
     }
 
     private function saveMetas(Post $post)
@@ -165,7 +158,6 @@ class PostCollection implements PostCollectionInterface
                 ]
             ]);
         }
-        $post->metasDerty = false;
     }
 
     private function saveContent(Post $post)
@@ -179,8 +171,20 @@ class PostCollection implements PostCollectionInterface
             'body' => $post->getContent()
         ]);
         $data = json_decode($response->getBody(), true);
-        $post->setData($data);
-        $post->contentDerty = false;
+        self::fillProperties($post, $data);
+    }
+    
+    static function fillProperties($post, $data){
+        if(is_array($data)){
+            foreach ($data as $key=>$value){
+                $post->setProperty($key, $value);
+            }
+        } else {
+            $vars = get_object_vars ( $data );
+            foreach ($vars as $key=>$value){
+                $post->setProperty($key, $value);
+            }
+        }
     }
 
     // ------------------------------------------------------ fetch --------------------------------------
@@ -235,6 +239,24 @@ class PostCollection implements PostCollectionInterface
             $content = "";
         }
         return $content;
+    }
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\CollectionInterface::getCount()
+     */
+    public function getCount(SearchParams $params): int
+    {}
+
+    /**
+     *
+     * {@inheritdoc}
+     * @see \Pluf\WP\PostCollectionInterface::newPost()
+     */
+    public function newPost($id): PostInterface
+    {
+        return new Post($this, []);
     }
 }
 

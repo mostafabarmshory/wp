@@ -45,10 +45,14 @@ class GetoptUpdateParams
             "update-description",
             "update-language:",
             "update-template:",
+            "last-upload-dtime:",
         );
         $result = getopt($shortopts, $longopts);
 
         $options = [
+            'lastUploadDtime' => $this->getOption($result, [
+                'last-upload-dtime'
+            ], null),
             'updateTemplate' => $this->getOption($result, [
                 'update-template',
             ], null),

@@ -52,5 +52,8 @@ class TagCollection implements TagsCollectionInterface
 
     public function put(TagInterface $post): TagInterface
     {}
+
+    public function getCount(SearchParams $params): int
+    {}
 }
 

@@ -12,28 +12,38 @@ use Pluf\WP\Cli\Output;
  * @author maso
  *        
  */
-class CmsPostsContentMinifyHtml
+class CmsPostsContentMinifyHtml extends ProcessWithProgress
 {
 
     public function __invoke(UnitTrackerInterface $unitTracker, CmsAbstract $sourceCms, Output $output)
     {
-        $output->print("Minifiying HTML");
-
         $params = new SearchParams();
         $params->perPage = 20;
-        $it = $sourceCms->postCollection()->find($params);
-        $index = 0;
+        $sourcePostCollection = $sourceCms->postCollection();
+        $this->setTitle("Minifiying HTML")
+            ->setDescription("To remove extra space and compress HTML")
+            ->setTotalSteps($sourcePostCollection->getCount($params))
+            ->setOutput($output)
+            ->start();
+            
+
+        $it = $sourcePostCollection->find($params);
         while ($it->valid()) {
-            $post = $it->next();
+            $post = $it->current();
+            $it->next();
 
-            $post->setContent($this->minifyHtml($post->getContent()));
-            $sourceCms->postCollection()->update($post);
-
-            $index ++;
-            // if vebose
-            $output->print(".");
+            $sourceContent = $post->getContent();
+            $content = $this->minifyHtml($sourceContent);
+            
+            if($content != $sourceContent) {
+                $post->setContent($content)
+                    ->setModifDate();
+                $sourcePostCollection->update($post);
+            }
+            
+            $this->stepComplete();
         }
-        $output->println(".");
+        $this->done();
         return $unitTracker->next();
     }
 

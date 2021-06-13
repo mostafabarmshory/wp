@@ -60,12 +60,11 @@ abstract class AbstractIterator implements Iterator
      */
     public function next()
     {
-        if ($this->endOfPage()) {
+        if ($this->endOfPage() && $this->anyItemLeft()) {
             $this->loadNextPage();
         }
-        $post = $this->current();
         $this->index ++;
-        return $post;
+        return $this->current();
     }
 
     /**
@@ -75,7 +74,12 @@ abstract class AbstractIterator implements Iterator
      */
     public function valid()
     {
-        return $this->isValid && (! $this->endOfPage() || ! isset($this->data) || sizeof($this->data) == $this->perPage);
+        return $this->isValid && ! ($this->endOfPage() && ! $this->anyItemLeft());
+    }
+
+    public function anyItemLeft()
+    {
+        return $this->currentPage == 0 || sizeof($this->data) == $this->perPage;
     }
 
     /**
@@ -85,6 +89,12 @@ abstract class AbstractIterator implements Iterator
      */
     public function current()
     {
+        if ($this->endOfPage() && $this->anyItemLeft()) {
+            $this->loadNextPage();
+        }
+        if (! array_key_exists($this->index, $this->data)) {
+            return null;
+        }
         $data = $this->data[$this->index];
         return $this->createNewInstance($data);
     }
@@ -99,8 +109,8 @@ abstract class AbstractIterator implements Iterator
         $this->isValid = true;
         $this->currentPage = 0;
         $this->perPage = $this->params->perPage;
-        $this->index = $this->params->perPage;
-        $this->data = null;
+        $this->index = 0;
+        $this->data = [];
     }
 
     /**
@@ -120,7 +130,7 @@ abstract class AbstractIterator implements Iterator
      */
     private function endOfPage(): bool
     {
-        return (! empty($this->data) && $this->index >= sizeof($this->data) - 1) || $this->index >= $this->perPage;
+        return $this->currentPage == 0 || $this->index >= sizeof($this->data);
     }
 
     /**
@@ -151,8 +161,10 @@ abstract class AbstractIterator implements Iterator
                     'url' => $this->client->getConfig('base_uri')
                 ]);
                 $error = null;
+                $this->isValid = true;
                 break;
             } catch (\Throwable $e) {
+                $this->isValid = false;
                 $error = $e;
                 $count ++;
                 sleep($count * $interval);

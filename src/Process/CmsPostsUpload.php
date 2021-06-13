@@ -5,54 +5,119 @@ use Pluf\Scion\UnitTrackerInterface;
 use Pluf\WP\CmsAbstract;
 use Pluf\WP\SearchParams;
 use Pluf\WP\Cli\Output;
+use Pluf\WP\PostInterface;
+use Pluf\WP\PostCollectionInterface;
 
-class CmsPostsUpload
+class CmsPostsUpload extends ProcessWithProgress
 {
 
-    public function __invoke(UnitTrackerInterface $unitTracker, CmsAbstract $sourceCms, CmsAbstract $distCms, Output $output)
+    public function __invoke(UnitTrackerInterface $unitTracker, CmsAbstract $sourceCms, CmsAbstract $distCms, Output $output, ?string $lastUploadDtime = null)
     {
-        $output->print("Getting start to uplad posts");
-
         $params = new SearchParams();
         $params->perPage = 20;
-        $it = $sourceCms->postCollection()->find($params);
-        $postCollection = $distCms->postCollection();
-        $index = 0;
-        while ($it->valid()) {
-            $index ++;
-            $post = $it->next();
-            // if vebose
-            $output->print(".");
+        $srcPostCollection = $sourceCms->postCollection();
 
-            // 1- create content
+        $this->setTitle("Upload Posts")
+            ->setDescription("Upload and update remote posts")
+            ->setTotalSteps($srcPostCollection->getCount($params))
+            ->setOutput($output)
+            ->start();
+
+        $it = $srcPostCollection->find($params);
+        $postCollection = $distCms->postCollection();
+        while ($it->valid()) {
+            $post = $it->current();
+            $it->next();
+            $this->stepComplete();
+
+            if (! empty($lastUploadDtime) && ! empty($post->getUploadDate()) && $post->getUploadDate() > $lastUploadDtime) {
+                continue;
+            }
+
             $tpost = $postCollection->getByName($post->getName());
-            if (! isset($tpost)) {
-                $tpost = $postCollection->put($post);
+            // Create if the target post not exist
+            if (empty($tpost)) {
+                // Create the post
+                $tpost = $postCollection->newPost($post->getId());
+                $this->fillFrom($tpost, $post);
+                $postCollection->put($tpost);
+                $postCollection->performTransaction($tpost, 'touch', []);
+                continue;
             }
-            
-            // 2- update info
-            if (! isset($tpost) || $post->getModifDate() > $tpost->getModifDate()) {
-                $tpost
-                    // fill data
-                    ->setTitle($post->getTitle($post))
-                    ->setMediaType($post->getMediaType())
-                    ->setMimeType($post->getMimeType())
-                    ->setFileName($post->getFileName())
-                    // fill content
-                    ->setContent($post->getContent($post));
-                // fill meta
-                $metas = $post->getMetas();
-                foreach ($metas as $key => $value){
-                    $tpost->setMeta($key, $value);
-                }
+
+            if ($this->isSourceNewer($post, $tpost)) {
+                // update
+                $this->fillFrom($tpost, $post);
                 $postCollection->update($tpost);
+                $postCollection->performTransaction($tpost, 'touch', []);
+                $this->markPostIsClean($srcPostCollection, $post);
+            } else if ($this->isTargetNewer($post, $tpost)) {
+                // sync with remote
+                $this->fillFrom($post, $tpost);
+                $srcPostCollection->update($post);
+                $this->markPostIsClean($srcPostCollection, $post);
             }
-            
-            // TODO: 5- update tags
-            // TODO: 6- update categories
+
         }
-        $output->println("[ok]");
+        $this->done();
+
         return $unitTracker->next();
+    }
+
+    public function fillFrom(PostInterface $target, PostInterface $source)
+    {
+        $target->setTitle($source->getTitle())
+            ->setDescription($source->getDescription())
+            ->setMediaType($source->getMediaType())
+            ->setMimeType($source->getMimeType())
+            ->setFileName($source->getFileName())
+            ->setContent($source->getContent())
+            ->setName($source->getName());
+        $metas = $source->getMetas();
+        foreach ($metas as $key => $value) {
+            $target->setMeta($key, $value);
+        }
+    }
+
+    // /**
+    // * Checks if the post is changed from the lat time update
+    // *
+    // * @param PostInterface $post
+    // * @return bool
+    // */
+    // private function isPostChanged(PostInterface $post): bool
+    // {
+    // $uploadTime = $post->getUploadDate();
+    // return empty($uploadTime) || $post->getModifDate() > $uploadTime;
+    // }
+
+    /**
+     * Sets upload date and save the post
+     *
+     * @param PostCollectionInterface $postCollection
+     * @param PostInterface $post
+     */
+    private function markPostIsClean(PostCollectionInterface $postCollection, PostInterface $post)
+    {
+        $post->setUploadDate();
+        $postCollection->update($post);
+    }
+
+    private function isSourceNewer(PostInterface $source, PostInterface $target): bool
+    {
+        $sourceModifTime = $source->getModifDate();
+        $targetModifiTIme = $target->getModifDate();
+
+        return $sourceModifTime > $targetModifiTIme;
+    }
+
+    private function isTargetNewer(PostInterface $source, PostInterface $target): bool
+    {
+        $sourceModifTime = $source->getModifDate();
+        $targetModifiTIme = $target->getModifDate();
+        $uploadTime = $source->getUploadDate();
+
+        return $sourceModifTime < $targetModifiTIme && (empty($uploadTime) || $uploadTime < $targetModifiTIme);
     }
 }
 

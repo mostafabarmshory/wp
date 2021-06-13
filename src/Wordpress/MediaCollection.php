@@ -62,5 +62,8 @@ class MediaCollection implements MediaCollectionInterface
      */
     public function getById($id): ?MediaInterface
     {}
+    public function getCount(SearchParams $params): int
+    {}
+
 }
 
